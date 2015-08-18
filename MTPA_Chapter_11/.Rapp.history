@@ -1,0 +1,1091 @@
+ls()
+my.runif <- runif(100)#
+#
+ls()
+str(my.runif)
+library(hints)
+hints(sample)
+hints(base)
+hints(MAAS)
+functions(MASS)
+objects(MASS)
+contents(MASS)
+args(sample)
+methods(lm)
+findMethods(lm)
+findMethods(sample)
+library(MMST)#
+data(bodyfat)#
+#
+# print(bodyfat) # would be long listing#
+#
+str(bodyfat)#
+#
+head(bodyfat)#
+#
+names(bodyfat)#
+#
+attributes(bodyfat)#
+#
+ncol(bodyfat)#
+#
+nrow(bodyfat)#
+#
+class(bodyfat)#
+#
+(class(bodyfat) == "data.frame")#
+#
+as.numeric((class(bodyfat) == "data.frame"))#
+#
+sapply(bodyfat,mean)#
+#
+sapply(bodyfat,median)#
+#
+percentile.90 <- function(x) #
+  { # begin user-defined function#
+  quantile(x,probs=c(0.90))#
+  } # begin user-defined function#
+#
+sapply(bodyfat,FUN=percentile.90)#
+#
+summary(bodyfat)#
+#
+plot(bodyfat,cex=0.1)
+my.model <- lm(bodyfat ~ weight + neck, data=bodyfat)#
+#
+str(my.model)#
+#
+my.model#
+#
+print(my.model)#
+#
+my.model$coefficients#
+#
+my.model$residual[1:6]#
+#
+head(my.model$residuals)#
+#
+head(bodyfat$bodyfat)#
+#
+head(predict(my.model))#
+#
+head(my.model$fitted.values)#
+#
+head(bodyfat$bodyfat) - head(predict(my.model))#
+#
+toms.R.squared <- cor(bodyfat$bodyfat,predict(my.model))^2#
+#
+summary(my.model)
+curve(my.model)
+args(curve)
+curve(bodyfat ~ weight)
+curve(bodyfat ~ weight,data=bodyfat)
+curve(weight,bodyfat,data=bodyfat)
+curve(weight,data=bodyfat)
+curve(bodyfat$weight)
+curve(sin, -2*pi, 2*pi, xname = "t")
+factorial(33)
+factorial(10)
+factorial(9)
+2000 - 3000
+2000 - 3400
+curve(tan, -2*pi, 2*pi, xname = "t")
+library(MMST)#
+data(wine)#
+library(caret)#
+library(plotrix)#
+wine.dist <- classDist(wine[1:13], wine$class)#
+wine.pred <- predict(wine.dist, wine[1:13])#
+wine.norm <- wine.pred / (wine.pred[,1] + wine.pred[,2] + wine.pred[,3])#
+wine.norm.class <- cbind(wine.norm, wine$class)#
+colnames(wine.norm.class) <- c(colnames(wine.norm.class)[1:3], "type")#
+#
+Barolo.type     <- subset(wine.norm.class[,1:3], wine.norm.class[,4] == 1)#
+Barbera.type    <- subset(wine.norm.class[,1:3], wine.norm.class[,4] == 2)#
+Grignolino.type <- subset(wine.norm.class[,1:3], wine.norm.class[,4] == 3)#
+#
+#by(wine.norm.class, wine.norm.class$type#
+#
+triax.plot(Barolo.type,#
+    main = "Triaxial Plot of classDist(wine)",#
+    col.symbols = "blue",  point.labels = "Baro", label.points=TRUE )#
+triax.points(Barbera.type,#
+    col.symbols = "red", point.labels = "Barb", label.points=TRUE )#
+triax.points(Grignolino.type,#
+     col.symbols = "purple", point.labels = "Grig", label.points=TRUE )
+library(MMST)
+data(baseball)
+str(baseball)
+nlm(function(x) return (x^3-20),3,iterlim=2,hessian=T)
+my.function <- function(x){(x^3) - 20}
+answer <- optimize(my.function)
+answer <- optimize(my.function,c(-5,5))
+answer$minimum
+answer$maximum
+answer
+answer <- nlm(my.function,c(-5,5))
+answer <- nlm(my.function)
+answer <- unitroot(my.function,c(-5,5))
+answer <- uniroot(my.function,c(-5,5))
+answer
+Rajesh.function <- function(x){(x^3) - 20}#
+answer <- uniroot(Rajesh.function,c(-5,5))#
+answer$root
+library(MMST)#
+library(MASS)#
+library(ggplot2)#
+data(baseball)#
+#
+library(lattice)#
+library(car)
+splom(baseball)
+ggplot(baseball.Log, aes(x=salary.Log)) + #
+  geom_histogram(binwidth= .2, colour="black", fill="pink") +#
+  geom_vline(aes(xintercept=mean(salary.Log, na.rm=T)),   # Ignore NA values for mean#
+             color="red", linetype="dashed", size=1) +#
+  geom_density(alpha=1E-12, fill="#FF6666")  # Overlay with transparent density plot
+library(ggplot2)
+ggplot(baseball.Log, aes(x=salary.Log)) + #
+  geom_histogram(binwidth= .2, colour="black", fill="pink") +#
+  geom_vline(aes(xintercept=mean(salary.Log, na.rm=T)),   # Ignore NA values for mean#
+             color="red", linetype="dashed", size=1) +#
+  geom_density(alpha=1E-12, fill="#FF6666")  # Overlay with transparent density plot
+salary.Log <- log10(baseball$salary)#
+baseball.Log <- cbind(salary.Log, baseball[2:18]) #replaces column 1 (Salary) with Salary.Log
+ggplot(baseball.Log, aes(x=salary.Log)) + #
+  geom_histogram(binwidth= .2, colour="black", fill="pink") +#
+  geom_vline(aes(xintercept=mean(salary.Log, na.rm=T)),   # Ignore NA values for mean#
+             color="red", linetype="dashed", size=1) +#
+  geom_density(alpha=1E-12, fill="#FF6666")  # Overlay with transparent density plot#
+dev.off()
+print(dim(baseball))
+qqnorm(baseball.Log$salary.Log, main ="QQ plot for Salary.log")
+library(MMST)#
+data(baseball)
+library(rpart)
+fit <- rpar(salary~BA + OBP + Runs + Hits + X2B + X3B + HR + RBI + BB + SO + SB + E + FAE + FA + AE + A, #
+   method="anova", data=baseball)
+fit <- rpart(salary~BA + OBP + Runs + Hits + X2B + X3B + HR + RBI + BB + SO + SB + E + FAE + FA + AE + A, #
+   method="anova", data=baseball)
+printcp(fit) #
+plotcp(fit)  #
+summary(fit)
+par(mfrow=c(1,2)) #
+rsq.rpart(fit)
+plot(fit, uniform=TRUE, #
+  	 main="Regression tree for baseball ")#
+text(fit, use.n=TRUE, all=TRUE, cex=.8)
+library(MMST)#
+data(bodyfat)#
+str(bodyfat)
+reduced.column.bodyfat <- bodyfat[,c("bodyfat","chest","thigh")]#
+str(reduced.column.bodyfat)
+library(MMST)#
+data(bodyfat)#
+str(bodyfat)#
+reduced.column.bodyfat <- bodyfat[,set.diff(names(bodyfat),c("chest","thigh"))]#
+str(reduced.column.bodyfat)
+library(MMST)#
+data(bodyfat)#
+str(bodyfat)#
+reduced.column.bodyfat <- bodyfat[,setdiff(names(bodyfat),c("chest","thigh"))]#
+str(reduced.column.bodyfat)
+library(MMST)#
+data(boston)
+fit <- rpart(crim ~ zn + indus + chas + nox + rm + age + dis + rad + tax + ptratio + black + lstat + medv, data=boston, method=anova))#
+summary (fit)#
+plot (fit)#
+prune (fit$cptable[which.min(fit$cptable[,"xerror"]),"CP"])
+library(arm)
+library(foreach)
+countLevel <- c(rep(0.1,10), rep(0.03,33), rep(0.01, 200))#
+plot(c(0,0,4,4), c(0,1,0,1), main = "X vs, mu")#
+mu <- 0.0#
+for(i in countLevel) {#
+ mu <- mu + i#
+ x <- 0.5#
+ for ( j in 1:100) {#
+   x <- mu * x * (1 - x)#
+   points(mu, x, pch = ".")#
+  }#
+ }
+plot(c(3,3,4,4), c(0,1,0,1), main = "Mu = 3 to 4, odd things happen", xlab = "mu = 3 to 4", pch = ".")#
+#
+mu <- 3.3#
+for(i in 1:3999) {#
+ mu <- mu + i/4000#
+ if (mu > 4.0) { break()#
+      print(i)#
+  }#
+ x <- 0.5#
+ for ( j in 1:1000) {#
+   x <- mu * x * (1 - x)#
+# burn through to a stable set #
+  }#
+ for ( k in 1:300) {#
+   x <- mu * x * (1 - x)#
+   points(mu, x, pch = ".", col = "blue")#
+  }#
+}#
+gc()
+mean(replicate(1000,any(duplicated(sample(1:365, k, replace=TRUE))))
+)
+for(k in 2:100)#
+cat(k,mean(replicate(1000,any(duplicated(sample(1:365, k, replace=TRUE)))))
+)
+for(k in 2:100)#
+cat("\n",k,mean(replicate(1000,any(duplicated(sample(1:365, k, replace=TRUE)))))
+)
+cat("N","Prob","\n","__________")#
+for(k in 2:100)#
+cat("\n",k,mean(replicate(1000,any(duplicated(sample(1:365, k, replace=TRUE)))))
+)
+Solving the Birthday Problem in R#
+cat("N","Prob","\n","__________")#
+for(k in 2:100)#
+cat("\n",k,mean(replicate(1000,any(duplicated(sample(1:365, k, replace=TRUE))))))
+Solving the Birthday Problem in R#
+set.seed(9999)#
+cat("N","Prob","\n","__________")#
+for(k in 2:100)#
+cat("\n",k,mean(replicate(10000,any(duplicated(sample(1:365, k, replace=TRUE))))))
+Solving the Birthday Problem in R#
+set.seed(9999)#
+cat("N","Prob","\n","------------")#
+for(k in 2:100)#
+cat("\n",k,mean(replicate(10000,any(duplicated(sample(1:365, k, replace=TRUE))))))
+Solving the Birthday Problem in R#
+set.seed(9999)#
+cat(" N"," Prob","\n","------------")#
+for(k in 2:75)#
+cat("\n",k,mean(replicate(10000,any(duplicated(sample(1:365, k, replace=TRUE))))))
+Solving the Birthday Problem in R#
+set.seed(9999)#
+cat(" N"," Prob","\n","---------")#
+for(k in 2:80)#
+cat("\n",k,mean(replicate(10000,any(duplicated(sample(1:365, k, replace=TRUE))))))
+Solving the Birthday Problem in R#
+set.seed(7777)#
+cat(" N"," Prob","\n","---------")#
+for(k in 2:80)#
+cat("\n",k,mean(replicate(10000,any(duplicated(sample(1:365, k, replace=TRUE))))))
+Solving the Birthday Problem in R#
+set.seed(7777)#
+cat(" N"," Prob","\n","---------")#
+for(k in 2:100) cat("\n",k,mean(replicate(10000,any(duplicated(sample(1:365, k, replace=TRUE))))))
+for(k in 2:100) cat("\n",k,mean(replicate(10000,any(duplicated(sample(1:365, k, replace=TRUE))))))
+library(recommenderlab)
+library(MMST)#
+data(boston)
+LEARNING_TEST <- c(rep("LEARN", length=trunc(nrow(boston)*(2/3))),rep("TEST", length = nrow(boston) - trunc(nrow(boston)*(2/3))))
+nrow(boston)
+length(LEARNING_TEST)
+set.seed (9999)#
+boston$LEARNING_TEST <- sample(LEARNING_TEST)#
+#
+boston.train <- boston[(boston$LEARNING_TEST = "LEARN"),]
+nrow(boston.train)
+boston.train <- boston[(boston$LEARNING_TEST == "LEARN"),]
+nrow(boston.train)
+table(boston$LEARNING_TEST)
+LEARNING_TEST
+table(boston$LEARNING_TEST)
+set.seed (9999)#
+boston$LEARNING_TEST <- sample(LEARNING_TEST)
+table(boston$LEARNING_TEST)
+boston.train <- boston[(boston$LEARNING_TEST == "LEARN"),]
+table(boston.train$LEARNING_TEST)
+str(boston.train)
+names(boston.train)
+boston.model <- {medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + tax + ptratio + black + lstat}
+library(nnet)#
+boston_nn1 <- nnet(boston.model,data=boston.train,size=2, linout=TRUE)
+boston.test <- boston[(boston$LEARNING_TEST == "TEST"),]
+str(boston.test)
+nnet.predict <- predict(boston_nn1, newdata=boston.test)
+nnet.predict
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, linout=TRUE)#
+#
+nnet.predict <- predict(boston_nn1, newdata=boston.test)
+nnet.predict
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e - 3, maxit = 1000, linout=TRUE)#
+#
+nnet.predict <- predict(boston_nn1, newdata=boston.test)
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e-3, maxit = 1000, linout=TRUE)#
+#
+nnet.predict <- predict(boston_nn1, newdata=boston.test)
+nnet.predict
+summary(boston.nn1)
+summary(boston_nn1)
+set.seet(7777)#
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e-3, maxit = 1000, linout=TRUE)#
+#
+nnet.predict <- predict(boston_nn1, newdata=boston.test)#
+#
+print(head(nnet.predict))
+set.seed(7777)#
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e-3, maxit = 1000, linout=TRUE)#
+#
+nnet.predict <- predict(boston_nn1, newdata=boston.test)#
+#
+print(head(nnet.predict))
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e-3, maxit = 1000, linout=TRUE)#
+#
+nnet.predict <- predict(boston_nn1, newdata=boston.test)#
+#
+print(head(nnet.predict))
+nnet.predict <- predict(boston_nn1, newdata=boston.test)#
+#
+print(head(nnet.predict))
+set.seed(7777)#
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e-3, maxit = 1000, linout=TRUE)
+nnet.predict <- predict(boston_nn1, newdata=boston.test)#
+#
+print(head(nnet.predict))
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e-3, maxit = 1000, linout=TRUE)
+nnet.predict <- predict(boston_nn1, newdata=boston.test)#
+#
+print(head(nnet.predict))
+library(MMST)#
+data(boston) #
+#
+LEARNING_TEST <- c(rep("LEARN", length=trunc(nrow(boston)*(2/3))),rep("TEST", length = nrow(boston) - trunc(nrow(boston)*(2/3))))#
+#
+set.seed (9999)#
+boston$LEARNING_TEST <- sample(LEARNING_TEST)#
+#
+boston.train <- boston[(boston$LEARNING_TEST == "LEARN"),]#
+#
+boston.test <- boston[(boston$LEARNING_TEST == "TEST"),]#
+#
+boston.model <- {medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + tax + ptratio + black + lstat} #
+#
+library(nnet)#
+set.seed(7777)#
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e-3, maxit = 1000, linout=TRUE)#
+#
+nnet.predict <- predict(boston_nn1, newdata=boston.test)#
+#
+print(head(nnet.predict))
+library(MMST)#
+data(boston) #
+#
+LEARNING_TEST <- c(rep("LEARN", length=trunc(nrow(boston)*(2/3))),rep("TEST", length = nrow(boston) - trunc(nrow(boston)*(2/3))))#
+#
+set.seed (9999)#
+boston$LEARNING_TEST <- sample(LEARNING_TEST)#
+#
+boston.train <- boston[(boston$LEARNING_TEST == "LEARN"),]#
+#
+boston.test <- boston[(boston$LEARNING_TEST == "TEST"),]#
+#
+boston.model <- {medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + tax + ptratio + black + lstat} #
+#
+library(nnet)#
+set.seed(7777)#
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e-3, maxit = 1000, linout=TRUE)#
+boston_nn1 <- nnet(boston.model,data=boston.train,size=12, decay = 1e-3, maxit = 1000, linout=TRUE)#
+#
+nnet.predict <- predict(boston_nn1, newdata=boston.test)#
+#
+print(head(nnet.predict))
+library(rpart)
+lmer
+lmer()
+library(nlme)
+lmer()
+library(arm)
+library(rpart)
+library(MMST)
+data(bodyfat)
+str(bodyfat)
+treemod <- rpart(weight ~ neck + abdomen,data=bodyfat)
+predict(treemod)
+library(MMST)
+data(boston)
+sampleIndex <- sample(nrow(boston), nrow(boston)*0.8)
+sampleIndex
+boston.train <- boston[sampleIndex,]#
+boston.test <- boston[-sampleIndex,]
+str(boston.train)
+row.names(boston.train)
+row.names(boston.test)
+intersect(row.names(boston.train,row.names(boston.test))
+)
+intersect(row.names(boston.train),row.names(boston.test))
+library(conjoint)#
+account = expand.grid(#
+Balance = c("No minimum balance", "$250 minimum balance"),#
+Maintenance=c("No monthly fee","$5 monthly fee"),#
+Debit=c("$5 monthly fee","$0.03 per swipe"),#
+Overdraft=c("$35 overdraft fee","$5 overdraft fee with overdraft protection (savings account necessary)"),#
+Checks=c("Free check books","$15 per check book"),#
+OnlineBanking=c("Free Online Banking","$5 monthly fee"))#
+design<-caFactorialDesign(data=account, type="full")#
+print(design)
+death.ray <- Lma.design(attribute.names = list(#
+ weight = c("5lbs.","1000lbs."), #
+ action = c("Compressed Air","Hand Operated"),#
+ modes = c("Safe","1000lbs."),#
+ sights = c("fixed","adjustable"),#
+ MaxKillRadius = c("Point Target 50ft","Area Target 300ft"),#
+ MaxEffectiveRange = c("Point Target 51ft ", "Area Target 300ft7in")), #
+ nalternatives = 3, nblocks = 2, row.renames = FALSE, seed = 987)#
+##########################################################################
+death.ray#
+##########################################################################
+questionnaire(choice.experiment.design = death.ray)#
+##########################################################################
+data("syn.res2")#
+syn.res2[1:3,]#
+##########################################################################
+death.raymat2 <- make.design.matrix(choice.experiment.design = death.ray, #
+ optout = TRUE, #
+ categorical.attributes = c("weight", "action", "modes", "sights", "MaxKillRadius", "MaxEffectiveRange"),#
+ unlabeled = FALSE)#
+##########################################################################
+death.raymat2[1:4,]#
+##########################################################################
+DR.dataset2 <- make.dataset(respondent.dataset = syn.res2, #
+ choice.indicators = #
+ c("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9"), #
+ design.matrix = death.raymat2)#
+DR.dataset2[1:4,]
+library(choice.CEs)
+library(choiceCEs)
+library(support.CEs)
+death.ray <- Lma.design(attribute.names = list(#
+ weight = c("5lbs.","1000lbs."), #
+ action = c("Compressed Air","Hand Operated"),#
+ modes = c("Safe","1000lbs."),#
+ sights = c("fixed","adjustable"),#
+ MaxKillRadius = c("Point Target 50ft","Area Target 300ft"),#
+ MaxEffectiveRange = c("Point Target 51ft ", "Area Target 300ft7in")), #
+ nalternatives = 3, nblocks = 2, row.renames = FALSE, seed = 987)#
+##########################################################################
+death.ray#
+##########################################################################
+questionnaire(choice.experiment.design = death.ray)#
+##########################################################################
+data("syn.res2")#
+syn.res2[1:3,]#
+##########################################################################
+death.raymat2 <- make.design.matrix(choice.experiment.design = death.ray, #
+ optout = TRUE, #
+ categorical.attributes = c("weight", "action", "modes", "sights", "MaxKillRadius", "MaxEffectiveRange"),#
+ unlabeled = FALSE)#
+##########################################################################
+death.raymat2[1:4,]#
+##########################################################################
+DR.dataset2 <- make.dataset(respondent.dataset = syn.res2, #
+ choice.indicators = #
+ c("q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9"), #
+ design.matrix = death.raymat2)#
+DR.dataset2[1:4,]
+str(DR.dataset2)
+Jim Haywood... Fixed #
+# Use support.CE functions to generate choice experiment design#
+# Individual Assignment 4#
+#
+# set working directory#
+setwd("C:/HAYWOOD/MSPA/Predict_450 - Marketing Analytics/Choice Experiment Assignment")#
+#
+#load support.CE package#
+library(support.CEs)#
+#
+# redirect output from screen to file#
+sink("Haywood_Choice_Experiment.txt")#
+#
+# there are 7 attributes, 2 with 2 levels, 5 with 4 levels#
+Base_Curves <- c("1", "2")#
+Diameters <- c("14.0","14.2","14.4","14.6")#
+Modality <- c("Daily Disposable", "2 Week Daily", "1 Week Extended", "30 Day Continuous")#
+Oxygen_Dk <- c("30","50","75","100")#
+Water_Content <- c("40%","50%","60%","70%")#
+Lens_Edge <- c("On-Eye","Off-Eye")#
+Lens_Quantity <- c("1 Month", "3 Month", "6 Month", "12 Month")#
+attributes <- list(Base_Curves, Diameters, Modality, Oxygen_Dk, Water_Content, Lens_Edge, Lens_Quantity)#
+names(attributes)<-c("Base_Curves","Lens_Diameter","Wear_Modality","Oxygen_Dk","Water_Content","Lens_Edge_Style","Lens_Quantity")#
+#
+# generate design using rotation method#
+# present 4 options at a time - nalternative = 4#
+# do 2 blocks -> 16 questions/block#
+#
+design.rotation <- rotation.design(attribute.names=attributes, nalternatives=4, nblocks=16, row.renames = FALSE, randomize=TRUE, seed = 987)#
+cat("\n","The Rotation Method Design", "\n")#
+print(design.rotation)#
+#
+# generate design using rotation method#
+# present 4 options at a time - nalternative = 4#
+# do 6 blocks -> 16 questions/block#
+#
+design.Lma <- Lma.design(attribute.names=attributes, nalternatives=4, nblocks=16, row.renames = FALSE, seed = 987)#
+cat("\n","The L^MA Method Design", "\n")#
+cat("\n", "----> Note that there are option sets where the same combination of attribute levels occure multiple times -------------------\n")#
+cat("\n", "----> See trial 26 in the Candidate Design Table - each 7 columns represent 1 option -----------------------------------------\n")#
+print(design.Lma)#
+#
+# print out the questionaire#
+#
+cat("\n","The LMA Questionnaire", "\n")#
+cat("\n", "----> Note that there are option sets where the same combination of attribute levels occure multiple times -------------------\n")#
+cat("\n", "----> See Block 1 Option Sets 1, 2, and 3, for example -----------------------------------------------------------------------\n")#
+questionnaire(design.Lma)#
+#
+# restore output to screen#
+sink()
+Jim Haywood... Fixed #
+# Use support.CE functions to generate choice experiment design#
+# Individual Assignment 4#
+#
+# set working directory#
+# setwd("C:/HAYWOOD/MSPA/Predict_450 - Marketing Analytics/Choice Experiment Assignment")#
+#
+#load support.CE package#
+library(support.CEs)#
+#
+# redirect output from screen to file#
+sink("Haywood_Choice_Experiment.txt")#
+#
+# there are 7 attributes, 2 with 2 levels, 5 with 4 levels#
+Base_Curves <- c("1", "2")#
+Diameters <- c("14.0","14.2","14.4","14.6")#
+Modality <- c("Daily Disposable", "2 Week Daily", "1 Week Extended", "30 Day Continuous")#
+Oxygen_Dk <- c("30","50","75","100")#
+Water_Content <- c("40%","50%","60%","70%")#
+Lens_Edge <- c("On-Eye","Off-Eye")#
+Lens_Quantity <- c("1 Month", "3 Month", "6 Month", "12 Month")#
+attributes <- list(Base_Curves, Diameters, Modality, Oxygen_Dk, Water_Content, Lens_Edge, Lens_Quantity)#
+names(attributes)<-c("Base_Curves","Lens_Diameter","Wear_Modality","Oxygen_Dk","Water_Content","Lens_Edge_Style","Lens_Quantity")#
+#
+# generate design using rotation method#
+# present 4 options at a time - nalternative = 4#
+# do 2 blocks -> 16 questions/block#
+#
+design.rotation <- rotation.design(attribute.names=attributes, nalternatives=4, nblocks=16, row.renames = FALSE, randomize=TRUE, seed = 987)#
+cat("\n","The Rotation Method Design", "\n")#
+print(design.rotation)#
+#
+# generate design using rotation method#
+# present 4 options at a time - nalternative = 4#
+# do 6 blocks -> 16 questions/block#
+#
+design.Lma <- Lma.design(attribute.names=attributes, nalternatives=4, nblocks=16, row.renames = FALSE, seed = 987)#
+cat("\n","The L^MA Method Design", "\n")#
+cat("\n", "----> Note that there are option sets where the same combination of attribute levels occure multiple times -------------------\n")#
+cat("\n", "----> See trial 26 in the Candidate Design Table - each 7 columns represent 1 option -----------------------------------------\n")#
+print(design.Lma)#
+#
+# print out the questionaire#
+#
+cat("\n","The LMA Questionnaire", "\n")#
+cat("\n", "----> Note that there are option sets where the same combination of attribute levels occure multiple times -------------------\n")#
+cat("\n", "----> See Block 1 Option Sets 1, 2, and 3, for example -----------------------------------------------------------------------\n")#
+questionnaire(design.Lma)#
+#
+# restore output to screen#
+sink()
+library(ChoiceModelR)
+choicemodelr
+library(quantmod)#
+# Barnes & Noble#
+getSymbols("BKS",src="yahoo",return.class = "xts")#
+print(str(BKS)) # show the structure of this xtx time series object#
+# plot the series#
+chartSeries(BKS,theme="white")
+products <- c("A","B","C","D")#
+#
+utilities <- c(8,10,5,2)#
+#
+work <- data.frame(products,utilities)
+str(work)
+work$BTL <- work$utilities / sum(work$utilities )
+str
+work
+work$FC <- ifelse((work$utilities == max(work$utilities)),1,0)
+work
+library(rattle)
+rattle()
+set.seed(9999)#
+x <- rand(100,000) # define a vector of 100 thousand observations on the unit interval#
+#
+vector.function <- function(x){#
+x * 10#
+}#
+#
+loop.function <- function(x){#
+y <- numeric(length(x))#
+for(i in seq(along=x)) y[i] <- x[i] * 10#
+y#
+}#
+#
+system.time(vector.function(x))#
+#
+system.time(loop.function(x))
+set.seed(9999)#
+x <- rnorm(100,000) # define a vector of 100 thousand standard normal observations #
+#
+vector.function <- function(x){#
+x * 10#
+}#
+#
+loop.function <- function(x){#
+y <- numeric(length(x))#
+for(i in seq(along=x)) y[i] <- x[i] * 10#
+y#
+}#
+#
+system.time(vector.function(x))#
+#
+system.time(loop.function(x))
+k <- 100,000#
+#
+set.seed(9999)#
+vector.function <- function(k){#
+rnorm(k)#
+}#
+#
+set.seed(9999)#
+loop.function <- function(k){#
+y <- numeric(k)#
+for(i in seq(along=y) y[i] <- rnorm(1)#
+y#
+}#
+#
+system.time(vector.function(x))#
+#
+system.time(loop.function(x))
+k <- 100,000#
+#
+set.seed(9999)#
+vector.function <- function(k){#
+rnorm(k)#
+}#
+#
+set.seed(9999)#
+loop.function <- function(k){#
+y <- numeric(k)#
+for(i in seq(along=y)) y[i] <- rnorm(1)#
+y#
+}#
+#
+system.time(vector.function(x))#
+#
+system.time(loop.function(x))
+k <- 1000000#
+#
+set.seed(9999)#
+vector.function <- function(k){#
+rnorm(k)#
+}#
+#
+set.seed(9999)#
+loop.function <- function(k){#
+y <- numeric(k)#
+for(i in seq(along=y)) y[i] <- rnorm(1)#
+y#
+}#
+#
+system.time(vector.function(x))#
+#
+system.time(loop.function(x))
+y <- numeric(1000000)
+loop.function <- function(k){#
+y <- numeric(k)#
+for(i in seq(along=y)) y[i] <- rnorm(1)#
+y#
+}
+k <- 1000000#
+#
+set.seed(9999)#
+vector.function <- function(k){#
+rnorm(k)#
+}#
+#
+set.seed(9999)#
+loop.function <- function(k){#
+y <- numeric(k)#
+for(i in seq(along=y)) y[i] <- rnorm(1)#
+y#
+}#
+#
+system.time(x <- vector.function(k))#
+#
+system.time(y <- loop.function(k))
+x == y
+k <- 1000000#
+#
+vector.function <- function(k){#
+rnorm(k)#
+}#
+#
+loop.function <- function(k){#
+y <- numeric(k)#
+for(i in seq(along=y)) y[i] <- rnorm(1)#
+y#
+}#
+#
+set.seed(9999)#
+system.time(x <- vector.function(k))#
+#
+set.seed(9999)#
+system.time(y <- loop.function(k))
+x == y
+setequal(x, y)
+junka <- TRUE#
+junka#
+#
+junkb <- FALSE#
+junkb#
+#
+(junka == junkb)#
+#
+(junka = junkb)#
+#
+(junka == junkb)#
+#
+junka#
+#
+junkb
+install.packages("formatR")
+x <- 1
+is.numeric(x)
+y <- "A"
+is.numeric(y)
+Load Dataset#
+library(MMST)#
+data(boston)
+LEARNING_TEST <- c(rep("LEARNING",length=300),rep("TEST",length=nrow(boston) - 300))#
+set.seed(1111111)#
+boston$setindicator <- sample(LEARNING_TEST)#
+boston.learning <- boston[(boston$setindicator=="LEARNING"),]#
+boston.test <- boston[(boston$setindicator=="TEST"),]#
+cat("Size of learning data set\n")#
+print(nrow(boston.learning))#
+cat("Size of test data set\n")#
+print(nrow(boston.test))
+boston.full.lm <- lm(log(medv) ~ ., data=boston.learning)#
+cat("Full linear model\n")#
+print(summary(boston.full.lm))#
+cat("VIFs for full linear model\n")#
+print(vif(boston.full.lm))#
+boston.lm.pred <- predict(boston.full.lm, newdata=boston.test, type="response")#
+cat("Out-of-sample RMSE for full linear model\n")#
+lm.rmse <- (sqrt(mean((boston.lm.pred - log(boston.test$medv))^2)))#
+print(lm.rmse)#
+cat("Exponentiated RMSE for full linear model (back in $$ in 1000s)\n")#
+lm.rmse.exp <- (exp(lm.rmse))#
+print(lm.rmse.exp)
+Load additional libraries for analysis#
+library(nnet)#
+library(car)#
+library(party)
+Remove setindicator variable from the learning and test subsets, since for some reason, it is screwing up the lm function, even when the formula is omitting the variable....#
+boston.learning$setindicator <- NULL#
+boston.test$setindicator <- NULL
+Begin with fitting full linear model & evaluate model fit & VIFs#
+#
+boston.full.lm <- lm(log(medv) ~ ., data=boston.learning)#
+cat("Full linear model\n")#
+print(summary(boston.full.lm))#
+cat("VIFs for full linear model\n")#
+print(vif(boston.full.lm))#
+boston.lm.pred <- predict(boston.full.lm, newdata=boston.test, type="response")#
+cat("Out-of-sample RMSE for full linear model\n")#
+lm.rmse <- (sqrt(mean((boston.lm.pred - log(boston.test$medv))^2)))#
+print(lm.rmse)#
+cat("Exponentiated RMSE for full linear model (back in $$ in 1000s)\n")#
+lm.rmse.exp <- (exp(lm.rmse))#
+print(lm.rmse.exp)#
+#
+### No VIFs higher than 10, but several are high: rad (8.2) and tax (9.9)
+Try backward elimination for model specification#
+boston.backwardstep <- step(boston.full.lm)
+Follow backward stepwise model for 2nd run#
+boston.lm.2 <- lm(log(medv) ~ . -age -indus, data=boston.learning)#
+cat("2nd linear model\n")#
+print(summary(boston.lm.2))#
+cat("VIFs for 2nd linear model\n")#
+print(vif(boston.lm.2))#
+boston.lm2.pred <- predict(boston.lm.2, newdata=boston.test, type="response")#
+cat("Out-of-sample RMSE for 2nd linear model\n")#
+lm2.rmse <- (sqrt(mean((boston.lm2.pred - log(boston.test$medv))^2)))#
+print(lm2.rmse)#
+cat("Exponentiated RMSE for 2nd linear model (back in $$ in 1000s)\n")#
+lm2.rmse.exp <- (exp(lm2.rmse))#
+print(lm2.rmse.exp)#
+#
+### trimmed model has slightly higher adjusted R-square#
+### Highest VIFs are rad (7.5) and tax (8.2)
+upper <- boston.full.lm#
+lower <- {log(medv) ~ 1}#
+#
+try.step <- step(boston.full.lm, scope=c(upper,lower),direction="backward")
+summary(try.step)
+try.step.pred <- predict(try.step, newdata=boston.test)
+try.step.rmse <- (sqrt(mean((try.step.pred - log(boston.test$medv))^2)))#
+print(try.step.rmse)
+my.design <- Lma.design(attribute.names = list(A = c("A1","A2","A3","A4","A5"),#
+  B = c("B1","B2","B3","B4","B5"),#
+  C = c("C1","C2","C3","C4"),#
+  D = c("D1","D2","D3","D4"),#
+  E = c("E1","E2","E3","E4"),#
+  F = c("F1","F2","F3","F4")),#
+  nalternatives = 4, nblocks = 10, seed = 1234)
+library(support.CEs)#
+#
+my.design <- Lma.design(attribute.names = list(A = c("A1","A2","A3","A4","A5"),#
+  B = c("B1","B2","B3","B4","B5"),#
+  C = c("C1","C2","C3","C4"),#
+  D = c("D1","D2","D3","D4"),#
+  E = c("E1","E2","E3","E4"),#
+  F = c("F1","F2","F3","F4")),#
+  nalternatives = 4, nblocks = 10, seed = 1234)
+my.design <- Lma.design(attribute.names = list(A = c("A1","A2","A3","A4","A5"),#
+  B = c("B1","B2","B3","B4","B5"),#
+  C = c("C1","C2","C3","C4"),#
+  D = c("D1","D2","D3","D4"),#
+  E = c("E1","E2","E3","E4"),#
+  F = c("F1","F2","F3","F4")),#
+  nalternatives = 4, nblocks = 24, seed = 1234)
+lemons <- c(1,2,3,4)
+cherries <- c(2,3,6,8)
+limes <- c(-3,-5,-9,-12)
+part.worths <- data.frame(lemons,cherries,limes)
+part.worths
+mean(part.worths)
+summary(part.worths)
+white noise demo#
+#
+set.seed(1234)#
+#
+white.noise <- ts(rnorm(200))  # define white noise time series object
+plot(white.noise, type = "l")  # plot of the time series
+acf(white.noise)  # plot of the correlagram showing no significant autocorrelation
+set.seed(1234)#
+#
+white.noise <- ts(rnorm(500))  # define white noise time series object#
+#
+plot(white.noise, type = "l")  # plot of the time series#
+#
+acf(white.noise)  # plot of the correlagram showing no significant autocorrelation
+set.seed(1234)#
+#
+white.noise <- ts(rnorm(1000))  # define white noise time series object#
+#
+plot(white.noise, type = "l")  # plot of the time series#
+#
+acf(white.noise)  # plot of the correlagram showing no significant autocorrelation
+set.seed(1234)#
+#
+white.noise <- ts(rnorm(1000))  # define white noise time series object#
+#
+plot(white.noise, type = "l")  # plot of the time series#
+#
+acf(white.noise, max.lag = 18)  # plot of the correlagram showing no significant autocorrelation
+set.seed(1234)#
+#
+white.noise <- ts(rnorm(1000))  # define white noise time series object#
+#
+plot(white.noise, type = "l")  # plot of the time series#
+#
+acf(white.noise, lag.max = 18)  # plot of the correlagram showing no significant autocorrelation
+set.seed(7777)#
+#
+white.noise <- ts(rnorm(1000))  # define white noise time series object#
+#
+plot(white.noise, type = "l")  # plot of the time series#
+#
+acf(white.noise, lag.max = 24)  # plot of the correlagram showing no significant autocorrelation
+set.seed(7777)#
+#
+white.noise <- ts(rnorm(360))  # define white noise time series object#
+#
+plot(white.noise, type = "l")  # plot of the time series#
+#
+acf(white.noise, lag.max = 24)  # plot of the correlagram showing no significant autocorrelation
+set.seed(1234)#
+#
+white.noise <- ts(rnorm(1200))  # define white noise time series object#
+#
+plot(white.noise, type = "l")  # plot of the time series#
+#
+acf(white.noise, lag.max = 24)  # plot of the correlagram
+plot(white.noise, type = "l")  # plot of the time series
+Let's construct a simple example of a market simulation#
+#
+# suppose there are two products and three consumers#
+# the data for the products are defined by vectors #
+#
+product_a1 <- c(1,0,0,2,3) # brand A price level 2 performance level 3#
+product_b1 <- c(0,1,0,1,2) # brand B price level 1 performance level 4#
+#
+# product_a1 is the higher priced and higher performance product#
+#
+product.matrix <- cbind(product_a1,product_b1)#
+#
+# we also have information about the three consumers' part-worths#
+# associated with a three-level categorical variable for brand#
+# and continuous variables for price and performance#
+moe <- c(0.50,-0.40,-0.10,-2.00,6.00)  # performance is key here#
+larry <- c(0.30,-0.40,0.10,-7.00,1.00)  # price-sensitive consumer#
+curly <- c(2.40,-0.10,-2.30,-1.00,0.50)  # loves brand A#
+part.worth.matrix <- cbind(moe,larry,curly)#
+#
+# we can compute the utilities of each product#
+# for each consumer using matrix multiplication %*%#
+# which is explained on pages 12 and 61 of Matloff  #
+utility.matrix <- t(part.worth.matrix) %*% product.matrix#
+#
+print(utility.matrix)#
+#
+# the results suggest that Moe and Curly will pick product_a1#
+# but Larry, being price-sensitive, will pick product_b1 even#
+# though Larry has a slight preference for brand B#
+#
+# note that matrix multiplication and other operations #
+# from linear algebra are of special value to modelers
+Utilities for Spatial Data Analysis#
+#
+# user-defined function to convert degrees to radians#
+# needed for lat.long.distance function#
+degrees.to.radians <- function(x) { #
+  (pi/180)*x#
+  } # end degrees.to.radians function #
+#
+# user-defined function to convert distance between two points in miles#
+# when the two points (a and b) are defined by longitude and latitude#
+lat.long.distance <- function(longitude.a,latitude.a,longitude.b,latitude.b) {#
+  radius.of.earth <- 24872/(2*pi)#
+  c <- sin((degrees.to.radians(latitude.a) - #
+    degrees.to.radians(latitude.b))/2)^2 + #
+    cos(degrees.to.radians(latitude.a)) * #
+    cos(degrees.to.radians(latitude.b)) * #
+    sin((degrees.to.radians(longitude.a) -#
+    degrees.to.radians(longitude.b))/2)^2#
+  2 * radius.of.earth * (asin(sqrt(c)))#
+  } # end lat.long.distance function#
+save(degrees.to.radians,#
+  lat.long.distance, #
+  file = "mtpa_spatial_distance_utilities.R")  #
+#
+,#
+ author    = {Kurt Hornik and Christian Buchta and Torsten Hothorn and Alexandros Karatzoglou and David Meyer and Achim Zeileis},#
+ title     = {RWeka:\,R/Weka interface},#
+ organization = {Comprehensive R Archive Network},#
+ year      = {2013},#
+ note     = {\url{http://cran.r-project.org/web/packages/RWeka/RWeka.pdf}}#
+}
+Utilities for Spatial Data Analysis#
+#
+# user-defined function to convert degrees to radians#
+# needed for lat.long.distance function#
+degrees.to.radians <- function(x) { #
+  (pi/180)*x#
+  } # end degrees.to.radians function #
+#
+# user-defined function to convert distance between two points in miles#
+# when the two points (a and b) are defined by longitude and latitude#
+lat.long.distance <- function(longitude.a,latitude.a,longitude.b,latitude.b) {#
+  radius.of.earth <- 24872/(2*pi)#
+  c <- sin((degrees.to.radians(latitude.a) - #
+    degrees.to.radians(latitude.b))/2)^2 + #
+    cos(degrees.to.radians(latitude.a)) * #
+    cos(degrees.to.radians(latitude.b)) * #
+    sin((degrees.to.radians(longitude.a) -#
+    degrees.to.radians(longitude.b))/2)^2#
+  2 * radius.of.earth * (asin(sqrt(c)))#
+  } # end lat.long.distance function#
+save(degrees.to.radians,#
+  lat.long.distance, #
+  file = "mtpa_spatial_distance_utilities.R")
+lat.long.distance <- function(longitude.a = -116,latitude.a = 33,longitude.b = -116.1,latitude.b = 33)
+lat.long.distance(longitude.a = -116,latitude.a = 33,longitude.b = -116.1,latitude.b = 33)
+5
+lat.long.distance(longitude.a = -111,latitude.a = 33,longitude.b = -116.1,latitude.b = 33)
+5
+lat.long.distance(longitude.a = -111,latitude.a = 35,longitude.b = -116.1,latitude.b = 33)
+source("chapter_10a_program.R")
+source("appendix_c2_program.R")
+Market Simulation Utilities#
+#
+# user-defined function for first-choice simulation rule#
+first.choice.simulation.rule <- function(response, alpha = 1) {#
+  # begin function for first-choice rule#
+  # returns binary vector or response vector with equal division #
+  # of 1 across all locations at the maximum#
+  # use alpha for desired sum across respondents#
+  # alpha useful when the set of tested profiles is not expected to be one#
+  if(alpha < 0 || alpha > 1) stop("alpha must be between zero and one")#
+  response.vector <- numeric(length(response))#
+  for(k in seq(along=response))#
+    if(response[k] == max(response)) response.vector[k] <- 1#
+  alpha*(response.vector/sum(response.vector))  #
+  }  # end first-choice rule function#
+#
+# user-defined function for predicted choices from four-profile choice sets #
+choice.set.predictor <- function(predicted.probability) {#
+  predicted.choice <- length(predicted.probability)  # initialize #
+  index.fourth <- 0  # initialize block-of-four choice set indices#
+  while (index.fourth < length(predicted.probability)) {#
+    index.first  <- index.fourth + 1#
+    index.second <- index.fourth + 2#
+    index.third  <- index.fourth + 3#
+    index.fourth <- index.fourth + 4#
+    this.choice.set.probability.vector <- #
+      c(predicted.probability[index.first],#
+      predicted.probability[index.second],#
+      predicted.probability[index.third],#
+      predicted.probability[index.fourth])#
+    predicted.choice[index.first:index.fourth] <- #
+      first.choice.simulation.rule(this.choice.set.probability.vector)  #
+    }#
+  predicted.choice <- factor(predicted.choice, levels = c(0,1), #
+    labels = c("NO","YES"))#
+  predicted.choice  #
+  } # end choice.set.predictor function #
+# save market simulation utilities for future work#
+save(first.choice.simulation.rule,#
+  choice.set.predictor,#
+  file="mtpa_market_simulation_utilities.Rdata")
+source("chapter_10a_program.R")
+source("chapter_10a_program.R")
+source("chapter_10a_program.R")
+source("chapter_10b_program.R")
+source("chapter_10b_program.R")
+source("chapter_10b_program.R")
+contingency table shows results of market simulation  #
+with(simulation.analysis.data.frame,#
+  table(setid,brand,simulation.predicted.choice))
+summary table of preference shares#
+YES.data.frame <- subset(simulation.analysis.data.frame, #
+  subset = (simulation.predicted.choice == "YES"), select = c("setid","brand"))
+check YES.data.frame to see that it reproduces the information#
+# from the contingency table #
+print(with(YES.data.frame,table(setid,brand)))
+create market share estimates by dividing by number of individuals#
+# no need for a spreasheet program to work with tables#
+table.work <- with(YES.data.frame,as.matrix(table(setid,brand)))#
+table.work <- table.work[,c("Apple","Dell","Gateway","HP")] # order columns#
+table.work <- round(100 *table.work/length(list.of.ids), digits = 1)  # percent #
+Apple.Price <- c(1000,1250,1500,1750,2000,2250,2500,2750)  # new column#
+table.work <- cbind(Apple.Price,table.work) # add price column to table#
+print(table.work)  # print the market/preference share table
+pdf(file = "fig_price_parallel_coordinates_individuals.pdf", #
+  width = 8.5, height = 11)#
+parallelplot(~selected.data[,c("Apple","Compaq","Dell","Gateway",#
+  "HP","IBM","Sony","Sun")] | top.brand, selected.data, layout = c (3,1))#
+dev.off()
+to what extent are consumers open to switching from one brand to another#
+# can see this trough parallel coordinates plots for the brand part-worths#
+pdf(file = "fig_price_parallel_coordinates_individuals.pdf", #
+  width = 8.5, height = 11)#
+print(parallelplot(~selected.data[,c("Apple","Compaq","Dell","Gateway",#
+  "HP","IBM","Sony","Sun")] | top.brand, selected.data, layout = c (3,1)))#
+dev.off()
+pdf(file = "fig_price_parallel_coordinates_groups.pdf", #
+  width = 8.5, height = 11)#
+print(parallelplot(~brands.data[,c("Apple","Compaq","Dell","Gateway",#
+  "HP","IBM","Sony","Sun")] | top.brand, brands.data, layout = c (3,1), #
+   lwd = 3, col = "mediumorchid4")) #
+dev.off()

@@ -1,0 +1,179 @@
+
+Block 1 
+ 
+Question 1 
+        alt.1       
+brand   "AT&T"      
+startup "$100"      
+monthly "$100"      
+service "4G NO"     
+retail  "Retail NO" 
+apple   "Apple NO"  
+samsung "Samsung NO"
+google  "Nexus NO"  
+
+Question 2 
+        alt.1        
+brand   "Verizon"    
+startup "$300"       
+monthly "$100"       
+service "4G NO"      
+retail  "Retail YES" 
+apple   "Apple YES"  
+samsung "Samsung YES"
+google  "Nexus NO"   
+
+Question 3 
+        alt.1        
+brand   "US Cellular"
+startup "$400"       
+monthly "$200"       
+service "4G NO"      
+retail  "Retail NO"  
+apple   "Apple NO"   
+samsung "Samsung YES"
+google  "Nexus NO"   
+
+Question 4 
+        alt.1       
+brand   "Verizon"   
+startup "$400"      
+monthly "$400"      
+service "4G YES"    
+retail  "Retail YES"
+apple   "Apple NO"  
+samsung "Samsung NO"
+google  "Nexus NO"  
+
+Question 5 
+        alt.1        
+brand   "Verizon"    
+startup "$200"       
+monthly "$300"       
+service "4G NO"      
+retail  "Retail NO"  
+apple   "Apple NO"   
+samsung "Samsung YES"
+google  "Nexus YES"  
+
+Question 6 
+        alt.1       
+brand   "Verizon"   
+startup "$100"      
+monthly "$200"      
+service "4G YES"    
+retail  "Retail NO" 
+apple   "Apple YES" 
+samsung "Samsung NO"
+google  "Nexus YES" 
+
+Question 7 
+        alt.1        
+brand   "US Cellular"
+startup "$300"       
+monthly "$300"       
+service "4G YES"     
+retail  "Retail NO"  
+apple   "Apple YES"  
+samsung "Samsung NO" 
+google  "Nexus NO"   
+
+Question 8 
+        alt.1       
+brand   "AT&T"      
+startup "$400"      
+monthly "$300"      
+service "4G NO"     
+retail  "Retail YES"
+apple   "Apple YES" 
+samsung "Samsung NO"
+google  "Nexus YES" 
+
+Question 9 
+        alt.1        
+brand   "AT&T"       
+startup "$200"       
+monthly "$400"       
+service "4G YES"     
+retail  "Retail NO"  
+apple   "Apple YES"  
+samsung "Samsung YES"
+google  "Nexus NO"   
+
+Question 10 
+        alt.1        
+brand   "T-Mobile"   
+startup "$400"       
+monthly "$100"       
+service "4G YES"     
+retail  "Retail NO"  
+apple   "Apple YES"  
+samsung "Samsung YES"
+google  "Nexus YES"  
+
+Question 11 
+        alt.1        
+brand   "US Cellular"
+startup "$100"       
+monthly "$400"       
+service "4G NO"      
+retail  "Retail YES" 
+apple   "Apple YES"  
+samsung "Samsung YES"
+google  "Nexus YES"  
+
+Question 12 
+        alt.1       
+brand   "T-Mobile"  
+startup "$200"      
+monthly "$200"      
+service "4G NO"     
+retail  "Retail YES"
+apple   "Apple YES" 
+samsung "Samsung NO"
+google  "Nexus NO"  
+
+Question 13 
+        alt.1        
+brand   "T-Mobile"   
+startup "$100"       
+monthly "$300"       
+service "4G YES"     
+retail  "Retail YES" 
+apple   "Apple NO"   
+samsung "Samsung YES"
+google  "Nexus NO"   
+
+Question 14 
+        alt.1        
+brand   "US Cellular"
+startup "$200"       
+monthly "$100"       
+service "4G YES"     
+retail  "Retail YES" 
+apple   "Apple NO"   
+samsung "Samsung NO" 
+google  "Nexus YES"  
+
+Question 15 
+        alt.1       
+brand   "T-Mobile"  
+startup "$300"      
+monthly "$400"      
+service "4G NO"     
+retail  "Retail NO" 
+apple   "Apple NO"  
+samsung "Samsung NO"
+google  "Nexus YES" 
+
+Question 16 
+        alt.1        
+brand   "AT&T"       
+startup "$300"       
+monthly "$200"       
+service "4G YES"     
+retail  "Retail YES" 
+apple   "Apple NO"   
+samsung "Samsung YES"
+google  "Nexus YES"  
+

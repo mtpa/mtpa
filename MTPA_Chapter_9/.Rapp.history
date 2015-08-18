@@ -1,0 +1,320 @@
+rattle()
+BA <- c(354,305,204,108,270)
+BA
+meal(BA)
+mean(BA)
+sd(BA)
+vr(BA)
+var(BA)
+OBP <- c(400,389,240,127,285)
+cor(BA,OBP)
+plot(BA,OBP)
+library(rattle)
+rattle()
+x(5,15,18,18,10,10,15,25,36,30)
+x <- c(5,15,18,18,10,10,15,25,36,30)
+x
+length(x)
+mean(x)
+median(x)
+mode(x)
+sort(x)
+round(5.5,digits=0)
+round(4.5,digits=0)
+library(statnet)
+5*25
+library(mlbench)
+boston.data.frame <- data(BostonHousing2)
+str(boston.data.frame)
+data(BostonHousing2)
+str(BostonHousing2)
+library(MMST)
+data(covertype)
+str(covertype)
+data(food)
+str(food)
+str(shoplifting)
+data(shoplifting)
+str(shoplifting)
+data(spambase)
+str(spambase)
+library(RWeka)#
+cl1 <- SimpleKMeans(iris[, -5], Weka_control(N = 3)) #
+cl1 #
+table(predict(cl1), iris$Species)
+library(latticeExtra)
+library(ggmap)
+4 _ 5
+4 + 5
+x <- rnorm(100)
+y <- rnorm(100)
+tom.model <- lm(y ~ x)
+anova(tom.model)
+plot(x,y)
+seq(1:365)
+sample(seq(1:365),20)
+duplicated(sample(seq(1:365),20))
+duplicated(sample(seq(1:365),50))
+repicate(duplicated(sample(seq(1:365),50)),1000)
+repeat(duplicated(sample(seq(1:365),50)),1000)
+repilcate(duplicated(sample(seq(1:365),50)),1000)
+replicate(duplicated(sample(seq(1:365),50)),1000)
+library(carat)
+library(caret)
+install.packages(c("caret", "pROC", "e1071", "RWeka", "rpart", "gbm", "kernlab", "partykit"),repos = "http://cran.r-project.org",dependencies = c("Depends", "Suggests"))
+library(HTS)
+library(hts)
+library(LearnBayes)
+data(jeter)
+data(jeter2004)
+str(jeter2004)
+Rating <- c(7,1,2,8,10,2,4,5,6, 5,2,4,7,6,9,7,5,5, 8,1,6,3,7,9,5,2,4, 8,6,4,5,6,7,6,8,3, 5,1,2,9,9,3,5,6,7, 8,2,3,4,6,9,6,3,5, 8,6,4,5,7,6,7,6,4, 7,5,2,8,9,7,5,5,3)
+Car <- seq(1:9)
+Brand <- as.factor(c("Audi","Buick","Ford", "Buick","Audi","Audi", "Ford","Buick","Ford"))MPG <- as.factor(c("20mpg","20mpg","25mpg", "30mpg","25mpg","30mpg", "30mpg","25mpg","20mpg"))Price <- as.factor(c("$35000","$45000","$45000", "$25000","$25000","$45000", "$35000","$35000","$25000"))
+conjoint.data.frame <- data.frame(Car,Rating,Brand,Price,MPG)
+conjoint.data.frame
+lm(Rating ~ Brand + MPG + Price,data=conjoint.data.frame)
+Rating <- c(7,1,4, 5,1,2, 5,2,4, 8,6,4, 8,2,3, 7,1,2, 8,1,6, 8,6,4, 7,5,2, 3,9,7, 9,9,3, 7,6,9, 5,6,7, 4,6,9, 8,10,2, 3,7,9, 5,7,6, 8,9,7, 6,3,3, 5,6,7, 7,5,5, 6,8,3, 6,3,5, 4,5,6, 5,2,4, 7,6,4, 5,5,3)
+lm(Rating ~ Brand + MPG + Price,data=conjoint.data.frame)
+conjoint.data.frame <- data.frame(Car,Rating,Brand,Price,MPG)
+lm(Rating ~ Brand + MPG + Price,data=conjoint.data.frame)
+options(contrasts=c("contr.sum","contr.poly"))
+lm(Rating ~ Brand + MPG + Price,data=conjoint.data.frame)
+x <- c(1,2,3,4,5)
+y <- c(2,3,4,6,7)
+cor(x,y)
+zx <- (x-mean(x))/sd(x)
+zx
+zy <- (y-mean(y))/sd(y)
+zy
+cor(zx,zy)
+library(arules)
+library(arulesViz)
+brit <- 1000000
+tom <- 10
+brit + tom
+library(RMySQL)
+library(psych)
+describe
+2013 - 1986
+2013 -1946
+2013 - 1987
+4460 + 290 + 99
+4460 + 290 + 99 + 45 + 19 +12
+4460 + 290 + 99 + 45 + 19 +12 +382
+x <- "apple, orange, pear"#
+#
+words<-data.frame(str_extract_all(x, "\\w+"))#
+#
+names(words)<-"myWords"#
+#
+words
+x <- "apple, orange, pear"#
+#
+words <- data.frame(str_extract_all(x, "\\w+"))#
+#
+names(words) <- "myWords"#
+#
+words
+library(parallel)
+processors <- detectCores()
+processors
+cl <- makeCluster(processors)
+stopCluster(cl)
+# run choropleth map jump-start using R package googleViz#
+# source("490_run_choropleth_with_googleViz_v001.R")#
+#
+# program prepared by Tom Miller#
+#
+# alternative to building a map from scratch using ggplot2 #
+#
+library(googleVis)  #
+# for working with Google Chart Tools APIA#
+# see CRAN documentation at http://cran.r-project.org/web/packages/googleVis/index.html#
+# note that googleVis depends upon RJSONIO... think JavaScript and JavaScript Object Notation#
+#
+# user-defined function to recode states as state abbreviations#
+# this assumes that both input and output are character strings#
+# note how we are putting the state abbreviations in alphabetical order#
+# to ensure that things do not get mixed up if we later convert to factors#
+# state abbreviations will be used as input to the googleVis package#
+#
+# Create Mapping for States from USGS numbers to abbreviations#
+make.state.abbreviation <- function(x) {#
+  switch(x, #
+         "2" = "AK", "1" = "AL", "5" = "AR", #
+         "4" = "AZ",  "6" = "CA",#
+         "8" = "CO", "9" = "CT", "11" = "DC",#
+         "10" = "DE", "12" = "FL",#
+         "13" =  "GA", "15" = "HI", "19" = "IA", #
+         "16" = "ID", "17" = "IL", "18" = "IN",#
+         "20" = "KS", "21" = "KY", "22" = "LA", #
+         "25" = "MA", "24" = "MD", "23" = "ME",#
+         "26" = "MI", "27" = "MN", "29" = "MO",  #
+         "28" = "MS", "30" = "MT", #
+         "37" = "NC", "38" = "ND",#
+         "31" = "NE", "33" = "NH", "34" = "NJ",#
+         "35" = "NM", "32" = "NV", "36" = "NY", #
+         "39" = "OH", "40" = "OK", "41" = "OR", #
+         "42" = "PA", #
+         "44" = "RI", "45" = "SC", "46" = "SD",#
+         "47" = "TN", "48" = "TX",#
+         "49" = "UT",  "51" = "VA", "50" = "VT", #
+         "53" = "WA", "55" = "WI", #
+         "54" = "WV", "56" = "WY", "")    #
+}#
+# variables in the data frame named my.data.frame#
+# State: State where shopper lives#
+# Age: Age of Shopper#
+# pial2 = 2, Shopper has a smartphone#
+my.data.frame <- read.csv("Omnibus_Jan_2013_csv.csv", header = TRUE)#
+# character string for state... not factor#
+my.data.frame$State <- as.character(my.data.frame$state)  #
+#
+# Map the state numbers to abbreviations#
+my.data.frame$state <- rep("", length = nrow(my.data.frame))#
+for(index.for.state in seq(along = my.data.frame$State)) #
+  my.data.frame$state[index.for.state] <- make.state.abbreviation(my.data.frame$State[index.for.state])#
+# check the coding of states#
+print(my.data.frame[,c("State", "state")])#
+#
+# filter out only cell phone users that have smartphones, pial2 = 2#
+my.data.frame.subset <- subset(my.data.frame, pial2==2)#
+#
+# set up color gradient color codes and values to be used in the JSON#
+# as required for the Google API: #
+#   colorAxis = "{values: [my.value.gradient], colors: [my.color.gradient]}",#
+# here is the color gradient array for use in the ggplot2 choropleth map#
+# my.color.gradient <- c(hex(HLS(12,0.5,0.9)), hex("gray90"), hex(HLS(253,0.5,0.9)))#
+# we will will use three corresponding Web colors: coral, lightgray, and blue#
+# which we will enter into JSON format for colors  #
+# these colors in the gradient are set to correspond to the min, median, and max#
+# values of the state data to be displayed in the choropleth map#
+my.value.gradient <- c(min(my.data.frame.subset$age), #
+                       median(my.data.frame.subset$age),#
+                       max(my.data.frame.subset$age)) #
+print(my.value.gradient)                         #
+#
+# create the map object by using googleVis function to #
+# generate a javascript program for running the choropleth map#
+javascript.us.map.object <-  gvisGeoChart(my.data.frame.subset, "state", "age", chartid="AverageAgeOfSmartphoneShoppingUsers",#
+  options=list(region="US", #
+  displayMode="regions",#
+  resolution="provinces", #
+  colorAxis = "{values: [0, 50, 100], colors: [\'deeppink', \'lightgray', \'blue']}", #
+  width=700, height=500,  title="Average Age of Smartphone Users"))#
+#
+# using plot on a gvis list object sends the program to the default browser application#
+plot(javascript.us.map.object)  # plots in a new browser window
+x = NULL
+data.frame(x)
+setwd("C:/Users/Owner/Documents/R Working Directory/IndivAssign")#
+#
+#Loading the required packages#
+library(ggplot2)#
+library(lattice)#
+library(RColorBrewer)#
+#
+#inputing the information#
+year <- c(2009, 2010, 2011, 2012, 2013)#
+nurses <- c(43147, 43346, 43305, 46573, 47500)#
+#
+#making the data frame#
+line.graph <- data.frame(year, nurses)#
+#
+#Comparing scales for figure 3#
+#R default y-scale is range of y values#
+ggplot(line.graph, aes(x=year, y=nurses))+#
+	geom_line()+#
+	ggtitle("Y-scale is range of Y-values")#
+#y scale set to zero#
+ggplot(line.graph, aes(x=year, y=nurses))+#
+	geom_line()+#
+	expand_limits(y=0)+#
+	ggtitle("Y-scale is set to Zero")#
+# experimenting with middle range#
+ggplot(line.graph, aes(x=year, y=nurses))+#
+	geom_line()+#
+	expand_limits(y=25000)+#
+	ggtitle("Y-scale is set to Zero")#
+#
+#Moving forward with R default for Y axis#
+#choosing the "+" symbol for points because it represents the Red Cross #
+ggplot(line.graph, aes(x=year, y=nurses))+ #
+	geom_line(size=2, color = "blue") +#
+	geom_point(size = 15, shape="+", colour = "red")+#
+	theme(axis.text.x = element_text(colour = "black", size = rel(1.4)))+#
+	xlab("") + ylab("")#
+#Experimental Code Repository #
+#I tried a few other modifications and saved the code in case I needed it again  #
+expand_limits(y=43000)+#
+ylim(43000, max(line.graph$nurses))+#
+geom_area(fill = "lightblue", alpha = .2)+#
+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+#
+#getting rid of breaks code#
+scale_y_continuous(breaks = NULL)+#
+scale_x_continuous(breaks = NULL)+#
+#text annotations and title #
+annotate("text", x=2009, y=43500, hjust=-.001, label="43,147", colour="black")+#
+	annotate("text", x=2013, y=47500, hjust=1.3, label="47,500", colour="black")+#
+	ggtitle("Nurse Headcount")
+dow_jones_stocks <- c("MMM","AXP","T","BA","CAT","CVX","CSCO","KO","DD","XOM","GE","GS","HD","INTC","IBM","JNJ","JPM","MCD","MRK","MSFT","NKE","PFE","PG","TRV","UNH","UTX","VZ","V","WMT","DIS")
+dow_jones_stocks
+length(dow_jones_stocks)
+sort(dow_jones_stocks)
+dow_jones_stocks <- c("AXP", "BA", "CAT", "CSCO", "CVX", "DD", "DIS", "GE", "GS",  #
+"HD", "IBM", "INTC", "JNJ", "JPM", "KO", "MCD", "MMM", "MRK", #
+"MSFT", "NKE", "PFE", "PG", "T", "TRV", "UNH", "UTX", "V", "VZ", "WMT", "XOM")
+dow_jones_stocks
+length(dow_jones_stocks)
+cat("\n enter horizon:  w = weeks m = months y = years")#
+horizon_code <- scan(what = character())
+horizon_code
+library(maps)
+library(maproj)
+library(mapproj)
+x <- runif(10)
+y <- runif(10)
+plot(x,y)
+source("chapter_9_program.R")
+source("chapter_9_program.R")
+pdf(file = "fig_sports_analytics_prob_matrix.pdf", width = 5, height = 5)#
+x <- rep(1:nrow(probmat),times=ncol(probmat))#
+y <- NULL#
+for (i in 1:ncol(probmat)) y <- c(y,rep(i,times=nrow(probmat)))#
+probtext <- sprintf("%0.3f", as.numeric(probmat))  # fixed format 0.XXX#
+text_data_frame <- data.frame(x, y, probtext)#
+text_data_frame$probtext <- as.character(text_data_frame$probtext)#
+text_data_frame$probtext <- ifelse((text_data_frame$probtext == "NA"),#
+    NA,text_data_frame$probtext)  # define diagonal cells as missing#
+text_data_frame <- na.omit(text_data_frame)  # diagonal cells#
+print(levelplot(probmat, cuts = 25, tick.number = 9,#
+    col.regions=colorRampPalette(c("violet", "white", "light blue")),#
+    xlab = "Visiting Team Runs Expected", #
+    ylab = "Home Team Runs Expected",#
+    panel = function(...) {#
+        panel.levelplot(...)  #
+        panel.text(text_data_frame$x, text_data_frame$y, #
+        labels = text_data_frame$probtext)#
+        }))#
+dev.off()
+pdf(file = "fig_sports_analytics_prob_matrix.pdf", width = 8.5, height = 8.5)#
+x <- rep(1:nrow(probmat),times=ncol(probmat))#
+y <- NULL#
+for (i in 1:ncol(probmat)) y <- c(y,rep(i,times=nrow(probmat)))#
+probtext <- sprintf("%0.3f", as.numeric(probmat))  # fixed format 0.XXX#
+text_data_frame <- data.frame(x, y, probtext)#
+text_data_frame$probtext <- as.character(text_data_frame$probtext)#
+text_data_frame$probtext <- ifelse((text_data_frame$probtext == "NA"),#
+    NA,text_data_frame$probtext)  # define diagonal cells as missing#
+text_data_frame <- na.omit(text_data_frame)  # diagonal cells#
+print(levelplot(probmat, cuts = 25, tick.number = 9,#
+    col.regions=colorRampPalette(c("violet", "white", "light blue")),#
+    xlab = "Visiting Team Runs Expected", #
+    ylab = "Home Team Runs Expected",#
+    panel = function(...) {#
+        panel.levelplot(...)  #
+        panel.text(text_data_frame$x, text_data_frame$y, #
+        labels = text_data_frame$probtext)#
+        }))#
+dev.off()

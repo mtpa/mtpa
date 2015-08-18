@@ -1,0 +1,16 @@
+Myron Blaine review
+
+Regarding To Explain or Predict - that was really a fantastic read. Probably spent more time rereading than should have, but there was much to learn and take-away. In process created a side-by-side of explanatory and prediction contents from Galit Shmueli’s article (attached) in case others are interested (that alone took almost five hours, but again worth it to me for future review).
+
+From: http://stats.stackexchange.com/questions/1194/practical-thoughts-on-explanatory-vs-predictive-modeling
+
+In one sentence
+
+Predictive modelling is all about "what is likely to happen?", whereas explanatory modelling is all about "what can we do about it?"
+
+In many sentences
+
+I think the main difference is what is intended to be done with the analysis. I would suggest explanation is much more important for intervention than prediction. If you want to do something to alter an outcome, then you had best be looking to explain why it is the way it is. Explanatory modelling, if done well, will tell you how to intervene (which input should be adjusted). However, if you simply want to understand what the future will be like, without any intention (or ability) to intervene, then predictive modelling is more likely to be appropriate.
+
+_To Explain or to Predict - Notes.pdf 
+
