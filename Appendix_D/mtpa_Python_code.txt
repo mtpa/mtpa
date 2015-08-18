@@ -1,0 +1,2915 @@
+# The Anscsombe Quartet (R)
+
+# demonstration data from
+# Anscombe, F. J. 1973, February. Graphs in statistical analysis. 
+#  The American Statistician 27: 17–21.
+
+# define the anscombe data frame
+anscombe <- data.frame(
+    x1 = c(10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5),
+    x2 = c(10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5),
+    x3 = c(10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5),
+    x4 = c(8, 8, 8, 8, 8, 8, 8, 19, 8, 8, 8),
+    y1 = c(8.04, 6.95,  7.58, 8.81, 8.33, 9.96, 7.24, 4.26,10.84, 4.82, 5.68),
+    y2 = c(9.14, 8.14,  8.74, 8.77, 9.26, 8.1, 6.13, 3.1,  9.13, 7.26, 4.74),
+    y3 = c(7.46, 6.77, 12.74, 7.11, 7.81, 8.84, 6.08, 5.39, 8.15, 6.42, 5.73),
+    y4 = c(6.58, 5.76,  7.71, 8.84, 8.47, 7.04, 5.25, 12.5, 5.56, 7.91, 6.89))
+
+# show results from four regression analyses
+with(anscombe, print(summary(lm(y1 ~ x1, data = anscombe))))
+with(anscombe, print(summary(lm(y2 ~ x2, data = anscombe))))
+with(anscombe, print(summary(lm(y3 ~ x3, data = anscombe))))
+with(anscombe, print(summary(lm(y4 ~ x4, data = anscombe))))
+
+# place four plots on one page using standard R graphics
+# ensuring that all have the same scales
+# for horizontal and vertical axes
+pdf(file = "fig_anscombe_R.pdf", width = 8.5, height = 8.5)
+par(mfrow=c(2,2), mar=c(5.1, 4.1, 4.1, 2.1))
+with(anscombe, plot(x1, y1, xlim=c(2,20), ylim=c(2,14), pch = 19, 
+    col = "darkblue", cex = 1.5, las = 1, xlab = "x1", ylab = "y1"))  
+title("Set I")
+with(anscombe,plot(x2, y2, xlim=c(2,20), ylim=c(2,14), pch = 19, 
+    col = "darkblue", cex = 1.5, las = 1, xlab = "x2", ylab = "y2"))
+title("Set II")
+with(anscombe,plot(x3, y3, xlim=c(2,20), ylim=c(2,14), pch = 19, 
+    col = "darkblue", cex = 1.5, las = 1, xlab = "x3", ylab = "y3"))
+title("Set III")
+with(anscombe,plot(x4, y4, xlim=c(2,20), ylim=c(2,14), pch = 19, 
+    col = "darkblue", cex = 1.5, las = 1, xlab = "x4", ylab = "y4"))
+title("Set IV")
+dev.off()
+
+# par(mfrow=c(1,1),mar=c(5.1, 4.1, 4.1, 2.1))  # return to plotting defaults
+
+# Predictive Model for Los Angeles Dodgers Promotion and Attendance (Python)
+
+# prepare for Python version 3x features and functions
+from __future__ import division, print_function
+
+# import packages for analysis and modeling
+import pandas as pd  # data frame operations
+import numpy as np  # arrays and math functions
+from scipy.stats import uniform  # for training-and-test split
+import statsmodels.api as sm  # statistical models (including regression)
+import statsmodels.formula.api as smf  # R-like model specification
+import matplotlib.pyplot as plt  # 2D plotting
+
+# read in Dodgers bobbleheads data and create data frame
+dodgers = pd.read_csv("dodgers.csv")
+
+# examine the structure of the data frame
+print("\nContents of dodgers data frame ---------------")
+
+# attendance in thousands for plotting 
+dodgers['attend_000'] = dodgers['attend']/1000
+
+# print the first five rows of the data frame
+print(pd.DataFrame.head(dodgers)) 
+
+mondays = dodgers[dodgers['day_of_week'] == 'Monday']
+tuesdays = dodgers[dodgers['day_of_week'] == 'Tuesday']
+wednesdays = dodgers[dodgers['day_of_week'] == 'Wednesday']
+thursdays = dodgers[dodgers['day_of_week'] == 'Thursday']
+fridays = dodgers[dodgers['day_of_week'] == 'Friday']
+saturdays = dodgers[dodgers['day_of_week'] == 'Saturday']
+sundays = dodgers[dodgers['day_of_week'] == 'Sunday']
+
+# convert days' attendance into list of vectors for box plot
+data = [mondays['attend_000'], tuesdays['attend_000'], 
+    wednesdays['attend_000'], thursdays['attend_000'], 
+    fridays['attend_000'], saturdays['attend_000'], 
+    sundays['attend_000']]
+ordered_day_names = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
+
+# exploratory data analysis: box plot for day of the week
+fig, axis = plt.subplots()
+axis.set_xlabel('Day of Week')
+axis.set_ylabel('Attendance (thousands)')
+day_plot = plt.boxplot(data, sym='o', vert=1, whis=1.5)
+plt.setp(day_plot['boxes'], color = 'black')    
+plt.setp(day_plot['whiskers'], color = 'black')    
+plt.setp(day_plot['fliers'], color = 'black', marker = 'o')
+axis.set_xticklabels(ordered_day_names)
+
+plt.savefig('fig_advert_promo_dodgers_eda_day_of_week_Python.pdf', 
+    bbox_inches = 'tight', dpi=None, facecolor='w', edgecolor='b', 
+    orientation='portrait', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)  
+
+april = dodgers[dodgers['month'] == 'APR']
+may = dodgers[dodgers['month'] == 'MAY']
+june = dodgers[dodgers['month'] == 'JUN']
+july = dodgers[dodgers['month'] == 'JUL']
+august = dodgers[dodgers['month'] == 'AUG']
+september = dodgers[dodgers['month'] == 'SEP']
+october = dodgers[dodgers['month'] == 'OCT']
+
+data = [april['attend_000'], may['attend_000'], 
+    june['attend_000'], july['attend_000'], 
+    august['attend_000'], september['attend_000'], 
+    october['attend_000']]
+ordered_month_names = ['April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct']
+
+fig, axis = plt.subplots()
+axis.set_xlabel('Month')
+axis.set_ylabel('Attendance (thousands)')
+day_plot = plt.boxplot(data, sym='o', vert=1, whis=1.5)
+plt.setp(day_plot['boxes'], color = 'black')    
+plt.setp(day_plot['whiskers'], color = 'black')    
+plt.setp(day_plot['fliers'], color = 'black', marker = 'o')
+axis.set_xticklabels(ordered_month_names)
+
+plt.savefig('fig_advert_promo_dodgers_eda_month_Python.pdf', 
+    bbox_inches = 'tight', dpi=None, facecolor='w', edgecolor='b', 
+    orientation='portrait', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)  
+
+# map day_of_week to ordered_day_of_week 
+day_to_ordered_day = {'Monday' : '1Monday', 
+     'Tuesday' : '2Tuesday', 
+     'Wednesday' : '3Wednesday', 
+     'Thursday' : '4Thursday', 
+     'Friday' : '5Friday',
+     'Saturday' : '6Saturday',
+     'Sunday' : '7Sunday'}
+dodgers['ordered_day_of_week'] = dodgers['day_of_week'].map(day_to_ordered_day)   
+
+# map month to ordered_month
+month_to_ordered_month = {'APR' : '1April', 
+     'MAY' : '2May', 
+     'JUN' : '3June', 
+     'JUL' : '4July', 
+     'AUG' : '5Aug',
+     'SEP' : '6Sept',
+     'OCT' : '7Oct'}
+dodgers['ordered_month'] = dodgers['month'].map(month_to_ordered_month)    
+
+# employ training-and-test regimen for model validation
+np.random.seed(1234)
+dodgers['runiform'] = uniform.rvs(loc = 0, scale = 1, size = len(dodgers))
+dodgers_train = dodgers[dodgers['runiform'] >= 0.33]
+dodgers_test = dodgers[dodgers['runiform'] < 0.33]
+# check training data frame
+print('\ndodgers_train data frame (rows, columns): ',dodgers_train.shape)
+print(dodgers_train.head())
+# check test data frame
+print('\ndodgers_test data frame (rows, columns): ',dodgers_test.shape)
+print(dodgers_test.head())
+
+# specify a simple model with bobblehead entered last
+my_model = str('attend ~ ordered_month + ordered_day_of_week + bobblehead')
+
+# fit the model to the training set
+train_model_fit = smf.ols(my_model, data = dodgers_train).fit()
+# summary of model fit to the training set
+print(train_model_fit.summary())
+# training set predictions from the model fit to the training set
+dodgers_train['predict_attend'] = train_model_fit.fittedvalues
+
+# test set predictions from the model fit to the training set
+dodgers_test['predict_attend'] = train_model_fit.predict(dodgers_test)
+
+# compute the proportion of response variance
+# accounted for when predicting out-of-sample
+print('\nProportion of Test Set Variance Accounted for: ',\
+    round(np.power(dodgers_test['attend'].corr(dodgers_test['predict_attend']),2),3))
+
+# use the full data set to obtain an estimate of the increase in
+# attendance due to bobbleheads, controlling for other factors 
+my_model_fit = smf.ols(my_model, data = dodgers).fit()
+print(my_model_fit.summary())
+
+print('\nEstimated Effect of Bobblehead Promotion on Attendance: ',\
+    round(my_model_fit.params[13],0))
+    
+# Traditional Conjoint Analysis (Python)
+
+# prepare for Python version 3x features and functions
+from __future__ import division, print_function
+
+# import packages for analysis and modeling
+import pandas as pd  # data frame operations
+import numpy as np  # arrays and math functions
+import statsmodels.api as sm  # statistical models (including regression)
+import statsmodels.formula.api as smf  # R-like model specification
+from patsy.contrasts import Sum
+
+# read in conjoint survey profiles with respondent ranks
+conjoint_data_frame = pd.read_csv('mobile_services_ranking.csv')
+
+# set up sum contrasts for effects coding as needed for conjoint analysis
+# using C(effect, Sum) notation within main effects model specification
+main_effects_model = 'ranking ~ C(brand, Sum) + C(startup, Sum) +  \
+    C(monthly, Sum) + C(service, Sum) + C(retail, Sum) + C(apple, Sum) + \
+    C(samsung, Sum) + C(google, Sum)'
+
+# fit linear regression model using main effects only (no interaction terms)
+main_effects_model_fit = \
+    smf.ols(main_effects_model, data = conjoint_data_frame).fit()
+print(main_effects_model_fit.summary()) 
+
+conjoint_attributes = ['brand', 'startup', 'monthly', 'service', \
+    'retail', 'apple', 'samsung', 'google']
+
+# build part-worth information one attribute at a time
+level_name = []
+part_worth = []
+part_worth_range = []
+end = 1  # initialize index for coefficient in params
+for item in conjoint_attributes:
+    nlevels = len(list(unique(conjoint_data_frame[item])))
+    level_name.append(list(unique(conjoint_data_frame[item]))) 
+    begin = end 
+    end = begin + nlevels - 1
+    new_part_worth = list(main_effects_model_fit.params[begin:end])
+    new_part_worth.append((-1) * sum(new_part_worth))  
+    part_worth_range.append(max(new_part_worth) - min(new_part_worth))  
+    part_worth.append(new_part_worth)   
+    # end set to begin next iteration
+    
+# compute attribute relative importance values from ranges
+attribute_importance = []
+for item in part_worth_range:
+    attribute_importance.append(round(100 * (item / sum(part_worth_range)),2))
+    
+# user-defined dictionary for printing descriptive attribute names     
+effect_name_dict = {'brand' : 'Mobile Service Provider', \
+    'startup' : 'Start-up Cost', 'monthly' : 'Monthly Cost', \
+    'service' : 'Offers 4G Service', 'retail' : 'Has Nearby Retail Store', \
+    'apple' : 'Sells Apple Products', 'samsung' : 'Sells Samsung Products', \
+    'google' : 'Sells Google/Nexus Products'}  
+ 
+# report conjoint measures to console 
+index = 0  # initialize for use in for-loop
+for item in conjoint_attributes:
+    print('\nAttribute:', effect_name_dict[item])
+    print('    Importance:', attribute_importance[index])
+    print('    Level Part-Worths')
+    for level in range(len(level_name[index])):
+        print('       ',level_name[index][level], part_worth[index][level])       
+    index = index + 1
+
+# Association Rules for Market Basket Analysis (Python)
+
+# import package for analysis and modeling
+from rpy2.robjects import r   # interface from Python to R
+
+r('library(arules)')  # association rules
+r('library(arulesViz)')  # data visualization of association rules
+r('library(RColorBrewer)')  # color palettes for plots
+
+r('data(Groceries)')  # grocery transcations object from arules package
+
+# show the dimensions of the transactions object
+r('print(dim(Groceries))')
+
+r('print(dim(Groceries)[1])')  # 9835 market baskets for shopping trips
+r('print(dim(Groceries)[2])')  # 169 initial store items  
+
+# examine frequency for each item with support greater than 0.025
+r('pdf(file="fig_market_basket_initial_item_support.pdf", \
+    width = 8.5, height = 11)')
+r('itemFrequencyPlot(Groceries, support = 0.025, \
+    cex.names=0.8, xlim = c(0,0.3), \
+    type = "relative", horiz = TRUE, col = "dark red", las = 1, \
+    xlab = paste("Proportion of Market Baskets Containing Item", \
+      "\n(Item Relative Frequency or Support)"))')
+r('dev.off()')    
+
+# explore possibilities for combining similar items
+r('print(head(itemInfo(Groceries)))') 
+r('print(levels(itemInfo(Groceries)[["level1"]]))')  # 10 levels... too few 
+r('print(levels(itemInfo(Groceries)[["level2"]]))')  # 55 distinct levels
+
+# aggregate items using the 55 level2 levels for food categories
+# to create a more meaningful set of items
+r('groceries <- aggregate(Groceries, itemInfo(Groceries)[["level2"]])')  
+
+r('print(dim(groceries)[1])')  # 9835 market baskets for shopping trips
+r('print(dim(groceries)[2])')  # 55 final store items (categories)  
+
+r('pdf(file="fig_market_basket_final_item_support.pdf", \
+      width = 8.5, height = 11)')
+r('itemFrequencyPlot(groceries, support = 0.025, \
+       cex.names=1.0, xlim = c(0,0.5),\
+       type = "relative", horiz = TRUE, col = "blue", las = 1,\
+       xlab = paste("Proportion of Market Baskets Containing Item",\
+    "\n(Item Relative Frequency or Support)"))')
+r('dev.off()')   
+
+# obtain large set of association rules for items by category and all shoppers
+# this is done by setting very low criteria for support and confidence
+r('first.rules <- apriori(groceries, \
+       parameter = list(support = 0.001, confidence = 0.05))')
+r('print(summary(first.rules))')  # yields 69,921 rules... too many
+
+# select association rules using thresholds for support and confidence 
+r('second.rules <- apriori(groceries, \
+       parameter = list(support = 0.025, confidence = 0.05))')
+r('print(summary(second.rules))')  # yields 344 rules
+  
+# data visualization of association rules in scatter plot
+r('pdf(file="fig_market_basket_rules.pdf", width = 8.5, height = 8.5)')
+r('plot(second.rules, \
+       control=list(jitter=2, col = rev(brewer.pal(9, "Greens")[4:9])), \
+  shading = "lift")')   
+r('dev.off()')    
+  
+# grouped matrix of rules 
+r('pdf(file="fig_market_basket_rules_matrix.pdf", \
+       width = 8.5, height = 8.5)')
+r('plot(second.rules, method="grouped", \
+       control=list(col = rev(brewer.pal(9, "Greens")[4:9])))')
+r('dev.off()')    
+
+# select rules with vegetables in consequent (right-hand-side) item subsets
+r('vegie.rules <- subset(second.rules, subset = rhs %pin% "vegetables")')
+r('inspect(vegie.rules)')  # 41 rules
+
+# sort by lift and identify the top 10 rules
+r('top.vegie.rules <- head(sort(vegie.rules, \
+       decreasing = TRUE, by = "lift"), 10)')
+r('inspect(top.vegie.rules)') 
+
+r('pdf(file="fig_market_basket_farmer_rules.pdf", width = 11, height = 8.5)')
+r('plot(top.vegie.rules, method="graph", \
+       control=list(type="items"), \
+       shading = "lift")')
+r('dev.off()')  
+
+# Analysis of Economic Time Series (Python)
+
+# prepare for Python version 3x features and functions
+from __future__ import division, print_function
+
+# import packages for time series analysis and modeling
+import pandas as pd  # data structures for time series analysis
+import datetime  # date manipulation
+import matplotlib.pyplot as plt
+from statsmodels.tsa.arima_model import ARIMA  # time series modeling
+from statsmodels.tsa.stattools import grangercausalitytests as granger
+
+# additional time series functions available in R
+# from rpy2.robjects import r  # interface from Python to R
+
+# Economic time series were originally obtained from
+# the Federal Reserve Bank of St. Louis (FRED system).
+#
+# National Civilian Unemployment Rate (monthly, percentage)
+#     converted to the employment rate ER = 100 - UNRATENSA
+#
+# Manufacturers' New Orders: Durable Goods (millions of dollars) 
+#     DGO = DGORDER/1000 expressed in  billions of dollars 
+#
+# University of Michigan Index of Consumer Sentiment (1Q 1966 = 100)
+#     ICS = UMCSENT
+#
+# New Homes Sold in the US, not seasonally adjusted (monthly, millions)
+#     NHS = HSN1FNSA   
+
+# read data in from comma-delimited text files
+ER_data_frame = pd.read_csv("FRED_ER_data.csv")
+DGO_data_frame = pd.read_csv("FRED_DGO_data.csv")
+ICS_data_frame = pd.read_csv("FRED_ICS_data.csv")
+NHS_data_frame = pd.read_csv("FRED_NHS_data.csv")
+
+# identify date fields as dates with apply and lambda function
+ER_data_frame['date'] = \
+    ER_data_frame['date']\
+    .apply(lambda d: datetime.datetime.strptime(str(d), '%Y-%m-%d'))
+DGO_data_frame['date'] = \
+    DGO_data_frame['date']\
+    .apply(lambda d: datetime.datetime.strptime(str(d), '%Y-%m-%d'))
+ICS_data_frame['date'] = \
+    ICS_data_frame['date']\
+    .apply(lambda d: datetime.datetime.strptime(str(d), '%Y-%m-%d'))
+NHS_data_frame['date'] = \
+    NHS_data_frame['date']\
+    .apply(lambda d: datetime.datetime.strptime(str(d), '%Y-%m-%d'))
+
+# create data frames indexed by date
+ER_data = ER_data_frame.set_index(['date']) 
+DGO_data = DGO_data_frame.set_index(['date']) 
+ICS_data = ICS_data_frame.set_index(['date']) 
+NHS_data = NHS_data_frame.set_index(['date']) 
+
+# plot the individual time series
+# National Civilian Employment Rate
+fig, axis = plt.subplots()
+axis = fig.add_subplot(1, 1, 1)
+axis.set_xlabel('Date')
+axis.set_ylabel('Employment Rate (100 = Unemployment Rate)')
+axis.set_title('National Civilian Employment Rate')
+ER_data['ER'].plot(ax = axis, style = 'k-')
+plt.savefig('fig_ER_Python.pdf', 
+    bbox_inches = 'tight', dpi=None, facecolor='w', edgecolor='b', 
+    orientation='portrait', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)  
+
+# Manufacturers New Orders: Durable Goods (billions of dollars) 
+fig, axis = plt.subplots()
+axis = fig.add_subplot(1, 1, 1)
+axis.set_xlabel('Date')
+axis.set_ylabel('Durable Goods Orders (billions of dollars)')
+axis.set_title\
+    ('Manufacturers New Orders: Durable Goods (billions of dollars)')
+DGO_data['DGO'].plot(ax = axis, style = 'k-')
+plt.savefig('fig_DGO_Python.pdf', 
+    bbox_inches = 'tight', dpi=None, facecolor='w', edgecolor='b', 
+    orientation='portrait', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)  
+
+# University of Michigan Index of Consumer Sentiment (1Q 1966 = 100)
+fig, axis = plt.subplots()
+axis = fig.add_subplot(1, 1, 1)
+axis.set_xlabel('Date')
+axis.set_ylabel('Index of Consumer Sentiment (1Q 1966 = 100)')
+axis.set_title\
+    ('University of Michigan Index of Consumer Sentiment (1Q 1966 = 100)')
+ICS_data['ICS'].plot(ax = axis, style = 'k-')
+plt.savefig('fig_ICS_Python.pdf', 
+    bbox_inches = 'tight', dpi=None, facecolor='w', edgecolor='b', 
+    orientation='portrait', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)  
+
+# New Homes Sold in the US, not seasonally adjusted (monthly, millions)
+fig, axis = plt.subplots()
+axis = fig.add_subplot(1, 1, 1)
+axis.set_xlabel('Date')
+axis.set_ylabel('New Homes Sold (millions)')
+axis.set_title('New Homes Sold (millions)')
+NHS_data['NHS'].plot(ax = axis, style = 'k-')
+plt.savefig('fig_NHS_Python.pdf', 
+    bbox_inches = 'tight', dpi=None, facecolor='w', edgecolor='b', 
+    orientation='portrait', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)  
+
+# merge the time series data frames
+economic_mts = pd.merge(ER_data, DGO_data,\
+    how = 'outer', left_index = True, right_index = True)
+economic_mts = pd.merge(economic_mts, ICS_data,\
+    how = 'outer', left_index = True, right_index = True)
+economic_mts = pd.merge(economic_mts, NHS_data,\
+    how = 'outer', left_index = True, right_index = True)
+print(economic_mts.shape)
+
+# select dates with complete data on all four series
+modeling_mts = economic_mts.dropna()
+print(modeling_mts.head)
+
+# select time series for multiple time series plot
+initial_plotting_mts = \
+    pd.DataFrame(modeling_mts, columns = ["ER","DGO","ICS","NHS"])
+print(initial_plotting_mts.head)
+
+# create multiple time series plot
+initial_plotting_mts.plot(subplots = True, style = 'k-', sharex = True,)
+plt.legend(loc = 'best')
+plt.xlabel('')
+
+# using March 1997 as reference data 
+print(modeling_mts.ix['1997-03-01'])  # (ICS = 100 on this date)
+# define indexing constants 
+indexing_constant = modeling_mts.ix['1997-03-01']
+ER0 = indexing_constant['ER']
+DGO0 = indexing_constant['DGO']
+NHS0 = indexing_constant['NHS']
+
+# compute indexed time series
+modeling_mts['IER'] = \
+    modeling_mts['ER'].apply(lambda d: (d/ER0) * 100) 
+modeling_mts['IDGO'] = \
+    modeling_mts['DGO'].apply(lambda d: (d/DGO0) * 100) 
+modeling_mts['INHS'] = \
+    modeling_mts['NHS'].apply(lambda d: (d/NHS0) * 100) 
+
+# create working multiple time series with just the indexed series
+working_economic_mts = \
+    pd.DataFrame(modeling_mts, columns = ["IER","IDGO","ICS","INHS"])
+print(working_economic_mts.head)
+
+# create multiple time series plot
+working_economic_mts.plot(subplots = True,  \
+     sharex = True, sharey = True, style = 'k-')
+plt.legend(loc = 'best')
+plt.xlabel('')
+plt.savefig('fig_economic_time_series_indexed_Python.pdf', 
+    bbox_inches = 'tight', dpi=None, facecolor='w', edgecolor='b', 
+    orientation='portrait', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)  
+
+# return to the individual economic time series prior to indexing  
+# functions from statsmodels package for time series forecasting 
+
+# ARIMA model search for the Employment Rate
+# ignoring seasonal adjustments
+# loop across alternative settings for p and q 
+# p is order of autoregressive process (1 or 2)
+# q is order of moving-average process (1 or 2)
+# choose model with lowest AIC
+print('\nER_arima_model Search')
+for pindex in range(2):
+    for qindex in range(2):
+        p = pindex + 1
+        q = qindex + 1
+        ER_arima_model = ARIMA(ER_data['ER'], order = (p,1,q)).fit()
+        print('AR:', p, 'MA:', q, 'AIC:', ER_arima_model.aic)
+# for first differenced ER models searched, AR p=2 MA q=2 is best
+ER_arima_model_selected = ARIMA(ER_data['ER'], order = (2,1,2)).fit()
+# fitted parameters of the selected model
+print(ER_arima_model_selected.params)
+# look-ahead forecasts needed 
+        
+# ARIMA model search for the Durable Goods Orders
+# ignoring seasonal adjustments
+# loop across alternative settings for p and q 
+# p is order of autoregressive process (1 or 2)
+# q is order of moving-average process (1 or 2)
+# choose model with lowest AIC
+print('\nDGO_arima_model Search')
+for pindex in range(2):
+    for qindex in range(2):
+        p = pindex + 1
+        q = qindex + 1
+        DGO_arima_model = ARIMA(DGO_data['DGO'], order = (p,1,q)).fit()
+        print('AR:', p, 'MA:', q, 'AIC:', DGO_arima_model.aic)        
+# for first differenced DGO models searched, AR p=1 MA q=2 is best
+DGO_arima_model_selected = ARIMA(DGO_data['DGO'], order = (1,1,2)).fit()
+# fitted parameters of the selected model
+print(DGO_arima_model_selected.params)
+# look-ahead forecasts needed 
+
+# ARIMA model search for the Index of Consumer Sentiment
+# ignoring seasonal adjustments
+# loop across alternative settings for p and q 
+# p is order of autoregressive process (1 or 2)
+# q is order of moving-average process (1 or 2)
+# choose model with lowest AIC
+print('\nICS_arima_model Search')
+for pindex in range(2):
+    for qindex in range(2):
+        p = pindex + 1
+        q = qindex + 1
+        ICS_arima_model = ARIMA(ICS_data['ICS'], order = (p,0,q)).fit()
+        print('AR:', p, 'MA:', q, 'AIC:', ICS_arima_model.aic)
+# for ICS models searched, AR p=2 MA q=2 is best
+ICS_arima_model_selected = ARIMA(ICS_data['ICS'], order = (2,0,2)).fit()
+# fitted parameters of the selected model
+print(ICS_arima_model_selected.params)
+# look-ahead forecasts needed 
+
+# ARIMA model search for New Homes Sold
+# ignoring seasonal adjustments
+# loop across alternative settings for p and q 
+# p is order of autoregressive process (1 or 2)
+# q is order of moving-average process (1 or 2)
+# choose model with lowest AIC
+print('\nNHS_arima_model Search')
+for pindex in range(2):
+    for qindex in range(2):
+        p = pindex + 1
+        q = qindex + 1
+        NHS_arima_model = ARIMA(NHS_data['NHS'], order = (p,1,q)).fit()
+        print('AR:', p, 'MA:', q, 'AIC:', NHS_arima_model.aic)
+# for first differenced NHS models searched, AR p=2 MA q=2 is best 
+NHS_arima_model_selected = ARIMA(NHS_data['NHS'], order = (2,1,2)).fit()
+# fitted parameters of the selected model
+print(NHS_arima_model_selected.params)
+# look-ahead forecasts needed 
+
+# Which regressors have potential as leading indicators?
+# look for relationships across three of the time series
+# using the period of overlap for those series
+
+# does time series in second column "cause" time series in first column
+print('Granger Tests')
+# R form of test: grangertest(ICS~ER, order = 3, data=modeling.mts)
+ICS_from_ER =  pd.DataFrame(modeling_mts, columns = ['ICS','ER'])
+test = granger(ICS_from_ER, maxlag = 3, addconst=True, verbose=False)
+print('ICS_from_ER:',test[3][0]['params_ftest'])
+
+# R form of test: grangertest(ICS~DGO, order = 3, data=modeling.mts)
+ICS_from_DGO =  pd.DataFrame(modeling_mts, columns = ['ICS','DGO'])
+test = granger(ICS_from_DGO, maxlag = 3, addconst=True, verbose=False)
+print('ICS_from_DGO:',test[3][0]['params_ftest'])
+
+# R form of test: grangertest(DGO~ER, order = 3, data=modeling.mts)
+DGO_from_ER =  pd.DataFrame(modeling_mts, columns = ['DGO','ER'])
+test = granger(DGO_from_ER, maxlag = 3, addconst=True, verbose=False)
+print('DGO_from_ER:',test[3][0]['params_ftest'])
+
+# R form of test: grangertest(DGO~ICS, order = 3, data=modeling.mts)
+DGO_from_ICS =  pd.DataFrame(modeling_mts, columns = ['DGO','ICS'])
+test = granger(DGO_from_ICS, maxlag = 3, addconst=True, verbose=False)
+print('DGO_from_ICS:',test[3][0]['params_ftest'])
+
+# R form of test: grangertest(ER~DGO, order = 3, data=modeling.mts)
+ER_from_DGO =  pd.DataFrame(modeling_mts, columns = ['ER','DGO'])
+test = granger(ER_from_DGO, maxlag = 3, addconst=True, verbose=False)
+print('ER_from_DGO:',test[3][0]['params_ftest'])
+
+# R form of test: grangertest(ER~ICS, order = 3, data=modeling.mts)
+ER_from_ICS =  pd.DataFrame(modeling_mts, columns = ['ER','ICS'])
+test = granger(ER_from_ICS, maxlag = 3, addconst=True, verbose=False)
+print('ER_from_ICS:',test[3][0]['params_ftest'])
+
+# Workforce Scheduling for Anonymous Bank Call Center (Python)
+
+# prepare for Python version 3x features and functions
+from __future__ import division, print_function
+
+# import packages for analysis and modeling
+import pandas as pd  # data frame operations
+import numpy as np  # arrays and math functions
+import datetime
+from rpy2.robjects import r  # interface from Python to R
+
+# Erlang C queueing theory  
+# input c = number of servers (positive integer)
+#       r = ratio of arrival rate over service rate 
+# output = probability of waiting in queue (min 0, max 1)
+# adapted from Pedro Canadilla (2014) function 
+# C_erlang in the R queueing package 
+def erlang_C (c = 1, r = 0):
+    if (c <= 0):
+        return(1)
+    if (r <= 0):
+        return(0)
+    c = int(c)    
+    tot = 1
+    for i in range(c-1):
+        i = i + 1
+        tot = 1 + (tot * i * (1/r))
+    return(max(0, min(1, (r * (1/tot)) / (c - (r * (1 - (1/tot)))))))
+    
+# focus upon February 1999
+call_center_input_data = pd.read_table('data_anonymous_bank_february.txt')
+# examine the structure of these data
+print(call_center_input_data.head)
+
+# delete PHANTOM calls
+call_center_data = \
+    call_center_input_data[call_center_input_data['outcome'] != 'PHANTOM']
+
+# negative VRU times make no sense... drop these rows from data frame
+call_center_data = call_center_data[call_center_data['vru_time'] >= 0]
+
+# calculate wait time as sum of vru_time and q_time
+call_center_data['wait_time'] = call_center_data['vru_time'] + \
+    call_center_data['q_time']
+
+# define date variable with apply and lambda function
+call_center_data['date'] = \
+    call_center_data['date']\
+    .apply(lambda d: datetime.datetime.strptime(str(d), '%y%m%d'))
+
+# define day of week as an integer 0 = Monday 6 = Sunday
+call_center_data['day_of_week'] = \
+    call_center_data['date'].apply(lambda d: d.weekday())
+# use dictionary object for mapping day_of_week to string
+day_of_week_to_string = {0 : 'Monday', 
+     1 : 'Tuesday', 
+     2 : 'Wednesday', 
+     3 : 'Thursday', 
+     4 : 'Friday',
+     5 : 'Saturday',
+     6 : 'Sunday'}
+call_center_data['day_of_week'] = \
+    call_center_data['day_of_week'].map(day_of_week_to_string)
+# check structure and contents of the data frame
+print(call_center_data.head)
+
+# examine frequency of calls by day of week
+print(call_center_data['day_of_week'].value_counts())
+
+# identify the hour of entry into the system
+call_center_data['vru_entry'] = \
+    call_center_data['vru_entry']\
+    .apply(lambda d: datetime.datetime.strptime(str(d), '%H:%M:%S'))
+call_center_data['call_hour'] = \
+    call_center_data['vru_entry'].apply(lambda d: d.hour)
+
+# check frequency of calls in february by hour and day of week
+# note that pandas alphabetizes on output 
+print(pd.crosstab(call_center_data['day_of_week'],\
+    call_center_data['call_hour'], margins = False))
+
+# create an ordered table for frequency of calls
+table_data = call_center_data.ix[:,['day_of_week', 'call_hour']]
+day_of_week_to_ordered_day_of_week = {'Monday' : '2_Monday', 
+     'Tuesday' : '3_Tuesday', 
+     'Wednesday' : '4_Wednesday', 
+     'Thursday' : '5_Thursday', 
+     'Friday' : '6_Friday',
+     'Saturday' : '7_Saturday',
+     'Sunday' : '1_Sunday'}
+table_data['ordered_day_of_week'] = \
+    table_data['day_of_week'].map(day_of_week_to_ordered_day_of_week)
+print(pd.crosstab(table_data['ordered_day_of_week'],\
+    table_data['call_hour'], margins = False))
+
+# select first week of February 1999 for data visualization and analysis
+# that week began on Monday, February 1 and ended on Sunday, February 7        
+selected_week = call_center_data[call_center_data['date'] < 
+    datetime.date(1999, 2, 8)]
+print(selected_week.head)    
+    
+# check frequency of calls in february by hour and day of week
+# create an ordered table for frequency of calls 
+# for the first week in February 1999
+table_data = selected_week.ix[:,['day_of_week', 'call_hour']]
+day_of_week_to_ordered_day_of_week = {'Monday' : '2_Monday', 
+     'Tuesday' : '3_Tuesday', 
+     'Wednesday' : '4_Wednesday', 
+     'Thursday' : '5_Thursday', 
+     'Friday' : '6_Friday',
+     'Saturday' : '7_Saturday',
+     'Sunday' : '1_Sunday'}
+table_data['ordered_day_of_week'] = \
+    table_data['day_of_week'].map(day_of_week_to_ordered_day_of_week)
+print(pd.crosstab(table_data['ordered_day_of_week'],\
+    table_data['call_hour'], margins = False))
+
+# wait-time ribbons were created with R ggplot2 software
+# Python packages ggplot or rpy2 could be used for plotting
+
+# select Wednesdays in February for the queueing model
+wednesdays = call_center_data[call_center_data['day_of_week'] == \
+    'Wednesday'] 
+print(wednesdays.head) 
+
+# arrival rate as average number of calls into VRU per hour 
+arrived_for_hour = wednesdays['call_hour'].value_counts()
+check_hourly_arrival_rate = arrived_for_hour/4  # four Wednesdays in February 1999
+print(check_hourly_arrival_rate)
+
+# organize hourly arrival rates according to 24-hour clock
+hourly_arrival_rate = [6.75, 1.75, 1.25, 0.00, 0.50, 0.25,\
+    4.75, 39.50, 97.25,107.50, 124.00,110.25, 95.50,\
+    203.50, 115.75, 115.50, 67.75, 75.00, 88.75,\
+    85.50, 68.00, 61.50, 57.50, 44.25]
+
+# service times may vary hour-by-hour due to differences 
+# in service requests and individuals calling hour-by-hour
+# begin by selecting calls that receive service
+wednesdays_served = wednesdays[wednesdays['server'] != \
+    'NO_SERVER'] 
+print(wednesdays_served.head) 
+      
+hourly_mean_service_time =\
+    wednesdays_served.pivot_table('ser_time', cols = ['call_hour'],\
+    aggfunc = 'mean', margins = False)
+
+# hourly service rate given the current numbers of service operators
+served_for_hour = wednesdays_served['call_hour'].value_counts()
+print(served_for_hour)
+
+# compute service rate noting that there are 3600 seconds in an hour
+# adding 60 seconds to each mean service time for time between calls
+# this 60 seconds is the wrap up time or time an service agent remains 
+# unavailable to answer a new call after a call has been completed
+mean_hourly_service_rate = 3600/(hourly_mean_service_time.mean() + 60)
+print('\nHourly Service Rate for Wednesdays:',\
+    round(mean_hourly_service_rate,3))
+
+# use 15 calls per hour as the rate for one service operator
+SERVICE_RATE = 15
+
+# use a target for the probability of waiting in queue to be 0.50
+PROBABILITY_GOAL = 0.50
+
+# Erlang C queueing calculations with Python erlang_C function
+# inputs c = number of servers
+#        r = ratio of rate of arrivals and rate of service
+# returns the propability of waiting in queue because all servers are busy
+# use while-loop iteration to determine the number of servers needed 
+# we do this for each hour of the day knowing the hourly arrival rate
+servers_needed = [0] * 24
+for index_for_hour in range(24):
+    if (hourly_arrival_rate[index_for_hour] > 0):
+        erlang_probability = 1 # initialize on entering while-loop
+        while (erlang_probability > PROBABILITY_GOAL):
+            servers_needed[index_for_hour] = servers_needed[index_for_hour] + 1
+            erlang_probability = \
+                erlang_C(c = servers_needed[index_for_hour],\
+                    r = hourly_arrival_rate[index_for_hour]/SERVICE_RATE)
+print(servers_needed)  # check queueing theory result 
+# the result for servers.needed is obtained as
+# 1  1  1  0  1  1  1  4  8  9 10  9  8 16 10 10  6  7  8  8  6  6  5  4
+# we will assume the bank call center will be closed hours 00 through 05
+# but use the other values as the bank's needed numbers of servers
+for index_for_hour in range(6):
+    servers_needed[index_for_hour] = 0
+print('\nHourly Operator Requirements:\n',servers_needed)
+
+# read in case data for the structure of call center worker shifts
+bank_shifts_data_frame = pd.read_csv("data_anonymous_bank_shifts.csv")
+# examine the structure of these data
+print(bank_shifts_data_frame.head)
+
+# constraint matrix as required for mathematical programming
+constraint_matrix = np.array(bank_shifts_data_frame)[:,2:]
+# we will create this type of object on the R side as well
+
+# six-hour shift salaries in Israeli sheqels 
+# 1 ILS = 3.61 USD in June 2013
+# these go into the objective function for integer programing
+# with the objective of minimizing total costs
+cost_vector = [252, 288, 180, 180, 180, 288, 288, 288] 
+
+# install lpsolove package and drivers for Python 
+# noting the operating system being used
+# or use rpy2 access to lpSolve in R as shown here
+
+# assign lists from Python to R using rpy2
+r.assign('servers_needed_R', servers_needed)
+r.assign('cost_vector_R', cost_vector)
+
+r('bank.shifts.data.frame <- read.csv("data_anonymous_bank_shifts.csv")')
+r('constraint_matrix_R <- as.matrix(bank.shifts.data.frame[,3:10])')
+
+# check mathematical programming inputs on the R side
+r('print(as.numeric(unlist(servers_needed_R)))')
+r('print(as.numeric(unlist(cost_vector_R)))')
+r('print(constraint_matrix_R)')
+
+# solve the mathematical programming problem
+r('library(lpSolve)')  
+r('call_center_schedule <- lp(const.mat=constraint_matrix_R,\
+    const.rhs = as.numeric(unlist(servers_needed_R)),\
+    const.dir = rep(">=", times = 8),\
+    int.vec = 1:8,\
+    objective = as.numeric(unlist(cost_vector_R)),\
+    direction = "min")')
+    
+# prepare summary of the results for the call center problem
+# working on the R side
+r('ShiftID <- 1:8')
+r('StartTime <- c(0,6,8,10,12,2,4,6)')
+# c("Midnight","6 AM","8 AM","10 AM","Noon","2 PM","4 PM","6 PM")
+r('ShiftDuration <- rep(6,times=8)')
+r('HourlyShiftSalary <- c(42,48,30,30,30,48,48,48)')
+r('HourlyShiftCost <- call_center_schedule$objective') # six x hourly shift salary
+r('Solution <- call_center_schedule$solution')  
+r('ShiftCost <- call_center_schedule$solution * call_center_schedule$objective')
+r('call_center_summary <- \
+  data.frame(ShiftID,StartTime,ShiftDuration,HourlyShiftSalary,\
+  HourlyShiftCost,Solution,ShiftCost)')
+r('cat("\n\n","Call Center Summary","\n\n")')
+r('print(call_center_summary)')
+r('print(call_center_schedule)')
+
+# alternatively... bring the solution from R to Python
+# and print the minimum-cost solution on the Python side
+call_center_schedule = r('call_center_schedule')
+print(call_center_schedule)
+
+# Text Analysis of Movie Tag Lines (R)
+
+# Note. Results from this program may differ from those published
+#       in the book due to changes in the tm package.
+#       The original analysis used the tm Dictionary() function,
+#       which is no longer available in tm. This function has
+#       been replaced by c(as.character()) to set the dictionary
+#       as a character vector. Another necessary change concerns
+#       the tolower() function, which must now be embedded within
+#       the tm content_transformer() function.
+#       The original analysis used the tm dissimilarity() function
+#       to compute cosine similarities. This is no longer available,
+#       so we use the proxy package and its dist() function.
+# 
+#       Additional differences will be observed between Python 
+#       and R versions of the analysis.
+
+# prepare for Python version 3x features and functions
+from __future__ import division, print_function
+
+# import packages for text processing and multivariate analysis
+import re  # regular expressions
+import nltk  # draw on the Python natural language toolkit
+import pandas as pd  # DataFrame structure and operations
+import numpy as np  # arrays and numerical processing
+import scipy
+import matplotlib.pyplot as plt  # 2D plotting
+
+# terms-by-documents matrix
+from sklearn.feature_extraction.text import CountVectorizer
+
+# alternative distance metrics for multidimensional scaling
+from sklearn.metrics import euclidean_distances 
+from sklearn.metrics.pairwise import linear_kernel as cosine_distances
+from sklearn.metrics.pairwise import manhattan_distances as manhattan_distances
+
+from sklearn import manifold  # multidimendional scaling
+from sklearn.cluster import KMeans  # cluster analysis by partitioning
+from sklearn.decomposition import PCA  # principal component analysis
+
+# define list of codes to be dropped from documents
+# carriage-returns, line-feeds, tabs
+codelist = ['\r', '\n', '\t']    
+
+# contractions and other word strings to drop from further analysis, adding
+# to the usual Englist stopwords to be dropped from the document collection
+more_stop_words = ['cant','didnt','doesnt','dont','goes','isnt','hes',\
+    'shes','thats','theres','theyre','wont','youll','youre','youve',\
+    're','tv','g','us','en','ve','vg','didn','pg','gp','our','we',
+    'll','film','video','name','years','days','one','two','three',\
+    'four','five','six','seven','eight','nine','ten','eleven','twelve'] 
+# start with the initial list and add to it for movie text work 
+stoplist = nltk.corpus.stopwords.words('english') + more_stop_words 
+
+# text parsing function for creating text documents 
+# there is more we could do for data preparation 
+# stemming... looking for contractions... possessives... 
+# but we will work with what we have in this parsing function
+# if we want to do stemming at a later time, we can use
+#     porter = nltk.PorterStemmer()  
+# in a construction like this
+#     words_stemmed =  [porter.stem(word) for word in initial_words]  
+def text_parse(string):
+    # replace non-alphanumeric with space 
+    temp_string = re.sub('[^a-zA-Z]', '  ', string)    
+    # replace codes with space
+    for i in range(len(codelist)):
+        stopstring = ' ' + codelist[i] + '  '
+        temp_string = re.sub(stopstring, '  ', temp_string)      
+    # replace single-character words with space
+    temp_string = re.sub('\s.\s', ' ', temp_string)   
+    # convert uppercase to lowercase
+    temp_string = temp_string.lower()    
+    # replace selected character strings/stop-words with space
+    for i in range(len(stoplist)):
+        stopstring = ' ' + str(stoplist[i]) + ' '
+        temp_string = re.sub(stopstring, ' ', temp_string)        
+    # replace multiple blank characters with one blank character
+    temp_string = re.sub('\s+', ' ', temp_string)    
+    return(temp_string)    
+
+# read in the comma-delimited text file with from initial data
+# preparation... create the movies data frame for analysis
+movies = pd.read_csv('movie_tagline_data_parsed.csv') 
+
+# plot frequency of movies by year... histogram
+plt.figure()
+plt.hist(movies['year'], bins= 100)
+plt.xlabel('Year')
+plt.ylabel('Number of Movies in Database')
+plt.show()
+plt.savefig('fig_text_movies_by_year_histogram.pdf', 
+    bbox_inches = 'tight', dpi=None, facecolor='w', edgecolor='b', 
+    orientation='landscape', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)  
+        
+# we work with movies from 1974 to 2013
+# create aggregate tagline_text collection for each year of interest
+year = []  # initialize year list
+tagline_text = []  # initialize aggregate tagline text
+parsed_text = []  # parsed tagline text for subsequent analysis 
+aggregate_document = ''  # intialize aggregate taglines document
+for iyear in range(1974,2014):
+    year.append(iyear)
+    gather_taglines = ''  # initialize aggregate tagline text
+    this_year_data_frame = movies[movies['year'] == iyear]
+    for this_record_index in this_year_data_frame.index.values:
+        this_record = this_year_data_frame.ix[this_record_index]
+        gather_taglines = gather_taglines + this_record['tagline']    
+    tagline_text.append(gather_taglines)
+    parsed_text.append(text_parse(gather_taglines))
+    aggregate_document = aggregate_document + gather_taglines
+big_bag_of_words = text_parse(aggregate_document)
+    
+# create document collection... 40 years of data = 40 documents
+tagline_data = {'year': year, 'tagline_text':tagline_text,\
+    'parsed_text':parsed_text}        
+tagline_data_frame = pd.DataFrame(tagline_data)
+    
+# create terms-by-documents matrix from the parsed text
+# extracting the top 200 words in the tagline corpus
+tdm_method = CountVectorizer(max_features = 200, binary = True)
+examine_movies_tdm = tdm_method.fit(parsed_text)
+top_words = examine_movies_tdm.get_feature_names()
+
+# get clean printing of the top words 
+print('\nTop 200 words in movie taglines database\n')
+print(map(lambda t: t.encode('ascii'), top_words))  # print sans unicode
+
+# extract the terms-by-docments matrix 
+# in scipy compressed sparse column format
+sparse_movies_tdm = tdm_method.fit_transform(parsed_text)
+# convert sparse matrix into regular terms-by-documents matrix
+movies_tdm = sparse_movies_tdm.todense()
+# define the docments-by-terms matrix 
+movies_dtm = movies_tdm.transpose()
+ 
+# dissimilarity measures and multidimensional scaling
+# consider alternative pairwise distance metrics from sklearn modules
+# euclidean_distances, cosine_distances, manhattan_distances (city-block)
+# note that different metrics provide different solutions
+# movies_distance_matrix = euclidean_distances(movies_tdm)
+# movies_distance_matrix = manhattan_distances(movies_tdm)
+movies_distance_matrix = cosine_distances(movies_tdm)
+
+mds_method = manifold.MDS(n_components = 2, random_state = 9999,\
+    dissimilarity = 'precomputed')
+mds_fit = mds_method.fit(movies_distance_matrix)  
+mds_coordinates = mds_method.fit_transform(movies_distance_matrix) 
+
+# plot tagline text for years in two dimensions 
+# defined by multidimensional scaling
+plt.figure()
+plt.scatter(mds_coordinates[:,0],mds_coordinates[:,1],\
+    facecolors = 'none', edgecolors = 'none')  # plots points in white (invisible)
+labels = []
+for iyear in range(1974,2014):
+    labels.append(str(iyear))  
+for label, x, y in zip(labels, mds_coordinates[:,0], mds_coordinates[:,1]):
+    plt.annotate(label, (x,y), xycoords = 'data')
+plt.xlabel('First Dimension')
+plt.ylabel('Second Dimension')    
+plt.show()
+plt.savefig('fig_text_mds_1974_2013.pdf', 
+    bbox_inches = 'tight', dpi=None, facecolor='w', edgecolor='b', 
+    orientation='landscape', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)      
+    
+# classification of words into groups for further analysis
+# use transpose of the terms-by-document matrix and cluster analysis
+# try five clusters/groups of words
+clustering_method = KMeans(n_clusters = 5, random_state = 9999) 
+clustering_solution = clustering_method.fit(movies_dtm)
+cluster_membership = clustering_method.predict(movies_dtm)
+word_distance_to_center = clustering_method.transform(movies_dtm)
+
+# top words data frame for reporting k-means clustering results
+top_words_data = {'word': top_words, 'cluster': cluster_membership,\
+    'dist_to_0': word_distance_to_center[0:,0],\
+    'dist_to_1': word_distance_to_center[0:,1],\
+    'dist_to_2': word_distance_to_center[0:,2],\
+    'dist_to_3': word_distance_to_center[0:,3],\
+    'dist_to_4': word_distance_to_center[0:,4]}
+distance_name_list = ['dist_to_0','dist_to_1','dist_to_2','dist_to_3','dist_to_4']    
+top_words_data_frame = pd.DataFrame(top_words_data)
+for cluster in range(5):
+    words_in_cluster =\
+        top_words_data_frame[top_words_data_frame['cluster'] == cluster] 
+    sorted_data_frame =\
+        top_words_data_frame.sort_index(by = distance_name_list[cluster],\
+        ascending = True)
+    print('\n Top Words in Cluster :',cluster,'------------------------------')
+    print(sorted_data_frame.head())
+    
+# could examine possible clustering solutions with partitioning
+# by changing the n_clusters setting for KMeans
+
+# a five-cluster solution seems to make sense with words
+# toward the center of each cluster fittng together
+# let's use pairs of top words from each cluster to name the clusters
+# cluster index 0: forever-hero
+# cluster index 1: best-high
+# cluster index 2: young-comedy
+# cluster index 3: everything-family
+# cluster index 4: going-real
+
+# name the clusters in the top words data frame
+cluster_to_name = {0:'forever-hero',\
+    1:'best-high', 2:'young-comedy',\
+    3:'everything-family', 4:'going-real'}
+top_words_data_frame['cluster_name'] = top_words_data_frame['cluster'].map(cluster_to_name)
+
+# use word clusters to define text measures...
+# in particular, let the raw score for a cluster for a year be the percentage
+# of words in that year's tagline documents that fall within the cluster
+# then to examine movies in time, standardize cluster scores across the
+# forty years of the study and plot as a multiple time series
+forever_hero_df =\
+    top_words_data_frame[top_words_data_frame['cluster'] == 0]     
+forever_hero_word_list = str(forever_hero_df['word'])  
+
+best_high_df =\
+    top_words_data_frame[top_words_data_frame['cluster'] == 1]     
+best_high_word_list = str(best_high_df['word'])  
+
+young_comedy_df =\
+    top_words_data_frame[top_words_data_frame['cluster'] == 2]     
+young_comedy_word_list = str(young_comedy_df['word'])  
+
+everything_family_df =\
+    top_words_data_frame[top_words_data_frame['cluster'] == 3]     
+everything_family_word_list = str(everything_family_df['word'])  
+
+going_real_df =\
+    top_words_data_frame[top_words_data_frame['cluster'] == 4]     
+going_real_word_list = str(going_real_df['word'])  
+
+# cluster scores as percentage of total words
+def cluster_scoring(cluster_count, total_count):
+    return (100 * (cluster_count/total_count))
+                                                                    
+# initialize word counts    
+forever_hero_words = []; best_high_words = []; young_comedy_words = []; 
+everything_family_words = []; going_real_words = []; total_words = []
+# initialize cluster scores
+forever_hero = []; best_high = []; young_comedy = []; 
+everything_family = []; going_real = []
+# compute text measures for each year
+for iyear in range(len(year)):
+    text = parsed_text[iyear]  # this year's text for scoring
+    total_count = len([w for w in text.split()])
+    total_words.append(total_count)
+    
+    forever_hero_count =\
+        len([w for w in text.split() if w in forever_hero_word_list])
+    forever_hero_words.append(forever_hero_count)
+    forever_hero.append(cluster_scoring(forever_hero_count, total_count))
+    
+    best_high_count =\
+         len([w for w in text.split() if w in best_high_word_list])
+    best_high_words.append(best_high_count)
+    best_high.append(cluster_scoring(best_high_count, total_count))
+    
+    young_comedy_count =\
+        len([w for w in text.split() if w in young_comedy_word_list])
+    young_comedy_words.append(young_comedy_count)
+    young_comedy.append(cluster_scoring(young_comedy_count, total_count))    
+        
+    everything_family_count =\
+        len([w for w in text.split() if w in everything_family_word_list])
+    everything_family_words.append(everything_family_count)
+    everything_family.append\
+        (cluster_scoring(everything_family_count, total_count))    
+        
+    going_real_count =\
+        len([w for w in text.split() if w in going_real_word_list])    
+    going_real_words.append(going_real_count)
+    going_real.append(cluster_scoring(going_real_count, total_count))   
+
+add_cluster_data = {'total_words':total_words,\
+    'forever_hero_words':forever_hero_words,\
+    'forever_hero':forever_hero,\
+    'best_high_words':best_high_words,\
+    'best_high':best_high,\
+    'young_comedy_words':young_comedy_words,\
+    'young_comedy':young_comedy,\
+    'everything_family_words':everything_family_words,\
+    'everything_family':everything_family,\
+    'going_real_words':going_real_words,\
+    'going_real':going_real}   
+add_cluster_data_frame = pd.DataFrame(add_cluster_data)      
+tagline_data_frame =\
+    pd.concat([tagline_data_frame,add_cluster_data_frame],axis=1) 
+
+# check text measure calculations
+print(tagline_data_frame.describe())
+print(tagline_data_frame.head())
+print(tagline_data_frame.tail())
+
+# compute text measure standard scores across years 
+tagline_data_frame['z_forever_hero'] =\
+    tagline_data_frame['forever_hero'].\
+    apply(lambda d: (d - tagline_data_frame['forever_hero'].mean())/\
+    tagline_data_frame['forever_hero'].std())
+    
+tagline_data_frame['z_best_high'] =\
+    tagline_data_frame['best_high'].\
+    apply(lambda d: (d - tagline_data_frame['best_high'].mean())/\
+    tagline_data_frame['best_high'].std())    
+    
+tagline_data_frame['z_young_comedy'] =\
+    tagline_data_frame['young_comedy'].\
+    apply(lambda d: (d - tagline_data_frame['young_comedy'].mean())/\
+    tagline_data_frame['young_comedy'].std())    
+
+tagline_data_frame['z_everything_family'] =\
+    tagline_data_frame['everything_family'].\
+    apply(lambda d: (d - tagline_data_frame['everything_family'].mean())/\
+    tagline_data_frame['everything_family'].std())    
+        
+tagline_data_frame['z_going_real'] =\
+    tagline_data_frame['going_real'].\
+    apply(lambda d: (d - tagline_data_frame['going_real'].mean())/\
+    tagline_data_frame['going_real'].std())            
+                
+# prepare data frame for multiple time series plot
+prelim_mts = pd.DataFrame(tagline_data_frame, columns =\
+    ['year', 'z_forever_hero', 'z_best_high', 'z_young_comedy',\
+    'z_everything_family', 'z_going_real'])
+prelim_mts.rename(columns = {'z_forever_hero':'Forever-Hero',\
+    'z_best_high':'Best-High', 'z_young_comedy':'Young-Comedy',\
+    'z_everything_family':'Everything-Family',\
+    'z_going_real':'Going-Real'}, inplace = True)
+mts = prelim_mts.set_index('year')    
+
+# generate the plot  
+mts.plot()
+plt.xlabel('')
+plt.ylabel('Standardized Text Measure')
+plt.show()
+plt.savefig('fig_text_mts_1974_2013.pdf', 
+    bbox_inches = 'tight', dpi=None,  
+    orientation='portrait', papertype=None, format=None, 
+    transparent=True, pad_inches=0.25, frameon=None)  
+    
+# Sentiment Analysis Using the Movie Ratings Data (R)
+
+# Note. Results from this program may differ from those published
+#       in the book due to changes in the tm package.
+#       The original analysis used the tm Dictionary() function,
+#       which is no longer available in tm. This function has
+#       been replaced by c(as.character()) to set the dictionary
+#       as a character vector. Another necessary change concerns
+#       the tolower() function, which must now be embedded within
+#       the tm content_transformer() function.
+# 
+# Despite changes in the tm functions, we have retained the
+# earlier positive and negative word lists for scoring, as
+# implemented in the code and utilities appendix under the file
+# name <R_utility_program_5.R>, which is brought in by source().
+
+# install these packages before bringing them in by library()
+library(tm)  # text mining and document management
+library(stringr)  # character manipulation with regular expressions
+library(grid)  # grid graphics utilities
+library(ggplot2)  # graphics
+library(latticeExtra) # package used for text horizon plot
+library(caret)  # for confusion matrix function
+library(rpart)  # tree-structured modeling
+library(e1071)  # support vector machines
+library(randomForest)  # random forests
+library(rpart.plot)  # plot tree-structured model information
+
+# R preliminaries to get the user-defined utilities for plotting 
+# place the plotting code file <R_utility_program_3.R>
+# in your working directory and execute it by
+#     source("R_utility_program_3.R")
+# Or if you have the R binary file in your working directory, use
+#     load("mtpa_split_plotting_utilities.Rdata")
+load("mtpa_split_plotting_utilities.Rdata")
+
+# standardization needed for text measures
+standardize <- function(x) {(x - mean(x)) / sd(x)}
+
+# convert to bytecodes to avoid "invalid multibyte string" messages
+bytecode.convert <- function(x) {iconv(enc2utf8(x), sub = "byte")}
+
+# read in positive and negative word lists from Hu and Liu (2004)
+positive.data.frame <- read.table(file = "Hu_Liu_positive_word_list.txt",
+  header = FALSE, colClasses = c("character"), row.names = NULL, 
+  col.names = "positive.words")
+positive.data.frame$positive.words <- 
+  bytecode.convert(positive.data.frame$positive.words)
+  
+negative.data.frame <- read.table(file = "Hu_Liu_negative_word_list.txt",
+  header = FALSE, colClasses = c("character"), row.names = NULL, 
+  col.names = "negative.words")  
+negative.data.frame$negative.words <- 
+  bytecode.convert(negative.data.frame$negative.words)
+
+# we use movie ratings data from Mass et al. (2011) 
+# available at http://ai.stanford.edu/~amaas/data/sentiment/
+# we set up a directory under our working directory structure
+# /reviews/train/unsup/ for the unsupervised reviews
+
+directory.location <- 
+  paste(getwd(),"/reviews/train/unsup/",sep = "")  
+unsup.corpus <- Corpus(DirSource(directory.location, encoding = "UTF-8"),
+  readerControl = list(language = "en_US"))
+print(summary(unsup.corpus))
+
+document.collection <- unsup.corpus
+
+# strip white space from the documents in the collection
+document.collection <- tm_map(document.collection, stripWhitespace)
+
+# convert uppercase to lowercase in the document collection
+document.collection <- tm_map(document.collection, content_transformer(tolower))
+
+# remove numbers from the document collection
+document.collection <- tm_map(document.collection, removeNumbers)
+
+# remove punctuation from the document collection
+document.collection <- tm_map(document.collection, removePunctuation)
+
+# using a standard list, remove English stopwords from the document collection
+document.collection <- tm_map(document.collection, 
+  removeWords, stopwords("english"))
+
+# there is more we could do in terms of data preparation 
+# stemming... looking for contractions... possessives... 
+# previous analysis of a list of top terms showed a number of word 
+# contractions which we might like to drop from further analysis, 
+# recognizing them as stop words to be dropped from the document collection
+initial.tdm <- TermDocumentMatrix(document.collection)
+examine.tdm <- removeSparseTerms(initial.tdm, sparse = 0.96)
+top.words <- Terms(examine.tdm)
+print(top.words)  
+
+more.stop.words <- c("cant","didnt","doesnt","dont","goes","isnt","hes",
+  "shes","thats","theres","theyre","wont","youll","youre","youve") 
+document.collection <- tm_map(document.collection, 
+  removeWords, more.stop.words)
+  
+some.proper.nouns.to.remove <- 
+  c("dick","ginger","hollywood","jack","jill","john","karloff",
+    "kudrow","orson","peter","tcm","tom","toni","welles","william","wolheim")
+document.collection <- tm_map(document.collection, 
+  removeWords, some.proper.nouns.to.remove)
+  
+# there is still more we could do in terms of data preparation  
+# but we will work with the bag of words we have for now
+  
+# the workhorse technique will be TermDocumentMatrix()
+# for creating a terms-by-documents matrix across the document collection
+# in previous text analytics with the taglines data we let the data
+# guide us to the text measures... with sentiment analysis we have
+# positive and negative dictionaries (to a large extent) defined in 
+# advance of looking at the data...
+# positive.words and negative.words lists were read in earlier
+# these come from the work of Hu and Liu (2004)   
+# positive.words = list of  positive words
+# negative.words = list of  negative words
+# we will start with these lists to build dictionaries 
+# that seem to make sense for movie reviews analysis
+# Hu.Liu.positive.dictionary <- Dictionary(positive.data.frame$positive.words)
+Hu.Liu.positive.dictionary <- 
+    c(as.character(positive.data.frame$positive.words))
+reviews.tdm.Hu.Liu.positive <- TermDocumentMatrix(document.collection, 
+  list(dictionary = Hu.Liu.positive.dictionary))
+examine.tdm <- removeSparseTerms(reviews.tdm.Hu.Liu.positive, 0.95)
+top.words <- Terms(examine.tdm)
+print(top.words)  
+Hu.Liu.frequent.positive <- findFreqTerms(reviews.tdm.Hu.Liu.positive, 25)
+# this provides a list positive words occurring at least 25 times
+# a review of this list suggests that all make sense (have content validity)
+# test.positive.dictionary <- Dictionary(Hu.Liu.frequent.positive)
+test.positive.dictionary <- c(as.character(Hu.Liu.frequent.positive))
+
+# .... now for the negative words
+# Hu.Liu.negative.dictionary <- Dictionary(negative.data.frame$negative.words)
+Hu.Liu.negative.dictionary <- 
+    c(as.character(negative.data.frame$negative.words))
+reviews.tdm.Hu.Liu.negative <- TermDocumentMatrix(document.collection, 
+  list(dictionary = Hu.Liu.negative.dictionary))
+examine.tdm <- removeSparseTerms(reviews.tdm.Hu.Liu.negative, 0.97)
+top.words <- Terms(examine.tdm)
+print(top.words)    
+Hu.Liu.frequent.negative <- findFreqTerms(reviews.tdm.Hu.Liu.negative, 15)  
+# this provides a short list negative words occurring at least 15 times
+# across the document collection... one of these words seems out of place
+# as they could be thought of as positive: "funny" 
+test.negative <- setdiff(Hu.Liu.frequent.negative,c("funny"))
+# test.negative.dictionary <- Dictionary(test.negative) 
+test.negative.dictionary <- c(as.character(test.negative))  
+
+# we need to evaluate the text measures we have defined
+# for each of the documents count the total words 
+# and the number of words that match the positive and negative dictionaries
+total.words <- integer(length(names(document.collection)))
+positive.words <- integer(length(names(document.collection)))
+negative.words <- integer(length(names(document.collection)))
+other.words <- integer(length(names(document.collection)))
+
+reviews.tdm <- TermDocumentMatrix(document.collection)
+
+for(index.for.document in seq(along=names(document.collection))) {
+  positive.words[index.for.document] <- 
+    sum(termFreq(document.collection[[index.for.document]], 
+    control = list(dictionary = test.positive.dictionary)))
+  negative.words[index.for.document] <- 
+    sum(termFreq(document.collection[[index.for.document]], 
+    control = list(dictionary = test.negative.dictionary)))  
+  total.words[index.for.document] <- 
+    length(reviews.tdm[,index.for.document][["i"]])
+  other.words[index.for.document] <- total.words[index.for.document] -
+    positive.words[index.for.document] - negative.words[index.for.document]
+  }
+
+document <- names(document.collection)
+text.measures.data.frame <- data.frame(document,total.words,
+  positive.words, negative.words, other.words, stringsAsFactors = FALSE) 
+rownames(text.measures.data.frame) <- paste("D",as.character(0:499),sep="")
+
+# compute text measures as percentages of words in each set
+text.measures.data.frame$POSITIVE <- 
+  100 * text.measures.data.frame$positive.words / 
+  text.measures.data.frame$total.words
+  
+text.measures.data.frame$NEGATIVE <- 
+  100 * text.measures.data.frame$negative.words / 
+    text.measures.data.frame$total.words 
+  
+# let us look at the resulting text measures we call POSITIVE and NEGATIVE
+# to see if negative and positive dimensions appear to be on a common scale
+# that is... is this a single dimension in the document space
+# we use principal component biplots to explore text measures 
+# here we can use the technique to check on POSITIVE and NEGATIVE
+principal.components.solution <- 
+  princomp(text.measures.data.frame[,c("POSITIVE","NEGATIVE")], cor = TRUE)
+print(summary(principal.components.solution))  
+# biplot rendering of text measures and documents by year
+pdf(file = "fig_sentiment_text_measures_biplot.pdf", width = 8.5, height = 11)
+biplot(principal.components.solution, xlab = "First Pricipal Component",
+  xlabs = rep("o", times = length(names(document.collection))),
+  ylab = "Second Principal Component", expand = 0.7)
+dev.off()
+
+# results... the eigenvalues suggest that there are two underlying dimensions
+# POSITIVE and NEGATIVE vectors rather than pointing in opposite directions
+# they appear to be othogonal to one another... separate dimensions
+
+# here we see the scatter plot for the two measures... 
+# if they were on the same dimension, they would be negatively correlated
+# in fact they are correlated negatively but the correlation is very small
+with(text.measures.data.frame, print(cor(POSITIVE, NEGATIVE)))  
+pdf(file = "fig_sentiment_text_measures_scatter_plot.pdf", 
+  width = 8.5, height = 8.5)
+ggplot.object <- ggplot(data = text.measures.data.frame,
+  aes(x = NEGATIVE, y = POSITIVE)) + 
+    geom_point(colour = "darkblue", shape = 1)
+ggplot.print.with.margins(ggplot.object.name = ggplot.object,
+  left.margin.pct=10, right.margin.pct=10,
+  top.margin.pct=10,bottom.margin.pct=10)
+dev.off()
+  
+# Perhaps POSITIVE and NEGATIVE can be combined in a way to yield effective 
+# predictions of movie ratings. Let us move to a set of movie reviews for 
+# supervised learning.  We select the 500 records from a set of positive 
+# reviews (ratings between 7 and 10) and 500 records from a set of negative 
+# reviews (ratings between 1 and 4).
+
+# a set of 500 positive reviews... part of the training set
+directory.location <- 
+  paste(getwd(),"/reviews/train/pos/",sep = "")  
+
+pos.train.corpus <- Corpus(DirSource(directory.location, encoding = "UTF-8"),
+  readerControl = list(language = "en_US"))
+print(summary(pos.train.corpus))
+
+# a set of 500 negative reviews... part of the training set
+directory.location <- 
+  paste(getwd(),"/reviews/train/neg/",sep = "")  
+
+neg.train.corpus <- Corpus(DirSource(directory.location, encoding = "UTF-8"),
+  readerControl = list(language = "en_US"))
+print(summary(neg.train.corpus))
+
+# combine the positive and negative training sets
+train.corpus <- c(pos.train.corpus, neg.train.corpus)
+
+# strip white space from the documents in the collection
+train.corpus <- tm_map(train.corpus, stripWhitespace)
+
+# convert uppercase to lowercase in the document collection
+train.corpus <- tm_map(train.corpus, content_transformer(tolower))
+
+# remove numbers from the document collection
+train.corpus <- tm_map(train.corpus, removeNumbers)
+
+# remove punctuation from the document collection
+train.corpus <- tm_map(train.corpus, removePunctuation)
+
+# using a standard list, remove English stopwords from the document collection
+train.corpus <- tm_map(train.corpus, 
+  removeWords, stopwords("english"))
+
+# there is more we could do in terms of data preparation 
+# stemming... looking for contractions... possessives... 
+# previous analysis of a list of top terms showed a number of word 
+# contractions which we might like to drop from further analysis, 
+# recognizing them as stop words to be dropped from the document collection
+initial.tdm <- TermDocumentMatrix(train.corpus)
+examine.tdm <- removeSparseTerms(initial.tdm, sparse = 0.96)
+top.words <- Terms(examine.tdm)
+print(top.words)  
+
+more.stop.words <- c("cant","didnt","doesnt","dont","goes","isnt","hes",
+  "shes","thats","theres","theyre","wont","youll","youre","youve") 
+train.corpus <- tm_map(train.corpus, 
+  removeWords, more.stop.words)
+  
+some.proper.nouns.to.remove <- 
+  c("dick","ginger","hollywood","jack","jill","john","karloff",
+    "kudrow","orson","peter","tcm","tom","toni","welles","william","wolheim")
+train.corpus <- tm_map(train.corpus, 
+  removeWords, some.proper.nouns.to.remove)
+
+# compute list-based text measures for the training corpus
+# for each of the documents count the total words 
+# and the number of words that match the positive and negative dictionaries
+total.words <- integer(length(names(train.corpus)))
+positive.words <- integer(length(names(train.corpus)))
+negative.words <- integer(length(names(train.corpus)))
+other.words <- integer(length(names(train.corpus)))
+
+reviews.tdm <- TermDocumentMatrix(train.corpus)
+
+for(index.for.document in seq(along=names(train.corpus))) {
+  positive.words[index.for.document] <- 
+    sum(termFreq(train.corpus[[index.for.document]], 
+    control = list(dictionary = test.positive.dictionary)))
+  negative.words[index.for.document] <- 
+    sum(termFreq(train.corpus[[index.for.document]], 
+    control = list(dictionary = test.negative.dictionary)))  
+  total.words[index.for.document] <- 
+    length(reviews.tdm[,index.for.document][["i"]])
+  other.words[index.for.document] <- total.words[index.for.document] -
+    positive.words[index.for.document] - negative.words[index.for.document]
+  }
+
+document <- names(train.corpus)
+train.data.frame <- data.frame(document,total.words,
+  positive.words, negative.words, other.words, stringsAsFactors = FALSE) 
+rownames(train.data.frame) <- paste("D",as.character(0:999),sep="")
+
+# compute text measures as percentages of words in each set
+train.data.frame$POSITIVE <- 
+  100 * train.data.frame$positive.words / 
+  train.data.frame$total.words
+  
+train.data.frame$NEGATIVE <- 
+  100 * train.data.frame$negative.words / 
+    train.data.frame$total.words 
+    
+# rating is embedded in the document name... extract with regular expressions
+for(index.for.document in seq(along = train.data.frame$document)) {
+  first_split <- strsplit(train.data.frame$document[index.for.document], 
+    split = "[_]")
+  second_split <- strsplit(first_split[[1]][2], split = "[.]")
+  train.data.frame$rating[index.for.document] <- as.numeric(second_split[[1]][1])
+  } # end of for-loop for defining ratings and thumbsupdown
+
+train.data.frame$thumbsupdown <- ifelse((train.data.frame$rating > 5), 2, 1)
+train.data.frame$thumbsupdown <- 
+  factor(train.data.frame$thumbsupdown, levels = c(1,2), 
+    labels = c("DOWN","UP"))
+
+# a set of 500 positive reviews... part of the test set
+directory.location <- 
+  paste(getwd(),"/reviews/test/pos/",sep = "")  
+
+pos.test.corpus <- Corpus(DirSource(directory.location, encoding = "UTF-8"),
+  readerControl = list(language = "en_US"))
+print(summary(pos.test.corpus))
+
+# a set of 500 negative reviews... part of the test set
+directory.location <- 
+  paste(getwd(),"/reviews/test/neg/",sep = "")  
+ 
+neg.test.corpus <- Corpus(DirSource(directory.location, encoding = "UTF-8"),
+  readerControl = list(language = "en_US"))
+print(summary(neg.test.corpus))
+
+# combine the positive and negative testing sets
+test.corpus <- c(pos.test.corpus, neg.test.corpus)
+
+# strip white space from the documents in the collection
+test.corpus <- tm_map(test.corpus, stripWhitespace)
+
+# convert uppercase to lowercase in the document collection
+test.corpus <- tm_map(test.corpus, content_transformer(tolower))
+
+# remove numbers from the document collection
+test.corpus <- tm_map(test.corpus, removeNumbers)
+
+# remove punctuation from the document collection
+test.corpus <- tm_map(test.corpus, removePunctuation)
+
+# using a standard list, remove English stopwords from the document collection
+test.corpus <- tm_map(test.corpus, 
+  removeWords, stopwords("english"))
+
+# there is more we could do in terms of data preparation 
+# stemming... looking for contractions... possessives... 
+# previous analysis of a list of top terms showed a number of word 
+# contractions which we might like to drop from further analysis, 
+# recognizing them as stop words to be dropped from the document collection
+initial.tdm <- TermDocumentMatrix(test.corpus)
+examine.tdm <- removeSparseTerms(initial.tdm, sparse = 0.96)
+top.words <- Terms(examine.tdm)
+print(top.words)  
+
+more.stop.words <- c("cant","didnt","doesnt","dont","goes","isnt","hes",
+  "shes","thats","theres","theyre","wont","youll","youre","youve") 
+test.corpus <- tm_map(test.corpus, 
+  removeWords, more.stop.words)
+  
+some.proper.nouns.to.remove <- 
+  c("dick","ginger","hollywood","jack","jill","john","karloff",
+    "kudrow","orson","peter","tcm","tom","toni","welles","william","wolheim")
+test.corpus <- tm_map(test.corpus, 
+  removeWords, some.proper.nouns.to.remove)
+
+# compute list-based text measures for the testing corpus
+# for each of the documents count the total words 
+# and the number of words that match the positive and negative dictionaries
+total.words <- integer(length(names(test.corpus)))
+positive.words <- integer(length(names(test.corpus)))
+negative.words <- integer(length(names(test.corpus)))
+other.words <- integer(length(names(test.corpus)))
+
+reviews.tdm <- TermDocumentMatrix(test.corpus)
+
+for(index.for.document in seq(along=names(test.corpus))) {
+  positive.words[index.for.document] <- 
+    sum(termFreq(test.corpus[[index.for.document]], 
+    control = list(dictionary = test.positive.dictionary)))
+  negative.words[index.for.document] <- 
+    sum(termFreq(test.corpus[[index.for.document]], 
+    control = list(dictionary = test.negative.dictionary)))  
+  total.words[index.for.document] <- 
+    length(reviews.tdm[,index.for.document][["i"]])
+  other.words[index.for.document] <- total.words[index.for.document] -
+    positive.words[index.for.document] - negative.words[index.for.document]
+  }
+
+document <- names(test.corpus)
+test.data.frame <- data.frame(document,total.words,
+  positive.words, negative.words, other.words, stringsAsFactors = FALSE) 
+rownames(test.data.frame) <- paste("D",as.character(0:999),sep="")
+
+# compute text measures as percentages of words in each set
+test.data.frame$POSITIVE <- 
+  100 * test.data.frame$positive.words / 
+  test.data.frame$total.words
+  
+test.data.frame$NEGATIVE <- 
+  100 * test.data.frame$negative.words / 
+    test.data.frame$total.words 
+    
+# rating is embedded in the document name... extract with regular expressions
+for(index.for.document in seq(along = test.data.frame$document)) {
+  first_split <- strsplit(test.data.frame$document[index.for.document], 
+    split = "[_]")
+  second_split <- strsplit(first_split[[1]][2], split = "[.]")
+  test.data.frame$rating[index.for.document] <- as.numeric(second_split[[1]][1])
+  } # end of for-loop for defining 
+
+test.data.frame$thumbsupdown <- ifelse((test.data.frame$rating > 5), 2, 1)
+test.data.frame$thumbsupdown <- 
+  factor(test.data.frame$thumbsupdown, levels = c(1,2), 
+    labels = c("DOWN","UP"))
+
+# a set of 4 positive and 4 negative reviews... testing set of Tom's reviews
+directory.location <- 
+  paste(getwd(),"/reviews/test/tom/",sep = "")  
+
+tom.corpus <- Corpus(DirSource(directory.location, encoding = "UTF-8"),
+  readerControl = list(language = "en_US"))
+print(summary(tom.corpus))
+
+# strip white space from the documents in the collection
+tom.corpus <- tm_map(tom.corpus, stripWhitespace)
+
+# convert uppercase to lowercase in the document collection
+tom.corpus <- tm_map(tom.corpus, content_transformer(tolower))
+
+# remove numbers from the document collection
+tom.corpus <- tm_map(tom.corpus, removeNumbers)
+
+# remove punctuation from the document collection
+tom.corpus <- tm_map(tom.corpus, removePunctuation)
+
+# using a standard list, remove English stopwords from the document collection
+tom.corpus <- tm_map(tom.corpus, 
+  removeWords, stopwords("english"))
+
+# there is more we could do in terms of data preparation 
+# stemming... looking for contractions... possessives... 
+# previous analysis of a list of top terms showed a number of word 
+# contractions which we might like to drop from further analysis, 
+# recognizing them as stop words to be dropped from the document collection
+initial.tdm <- TermDocumentMatrix(tom.corpus)
+examine.tdm <- removeSparseTerms(initial.tdm, sparse = 0.96)
+top.words <- Terms(examine.tdm)
+print(top.words)  
+
+more.stop.words <- c("cant","didnt","doesnt","dont","goes","isnt","hes",
+  "shes","thats","theres","theyre","wont","youll","youre","youve") 
+tom.corpus <- tm_map(tom.corpus, 
+  removeWords, more.stop.words)
+  
+some.proper.nouns.to.remove <- 
+  c("dick","ginger","hollywood","jack","jill","john","karloff",
+    "kudrow","orson","peter","tcm","tom","toni","welles","william","wolheim")
+tom.corpus <- tm_map(tom.corpus, 
+  removeWords, some.proper.nouns.to.remove)
+
+# compute list-based text measures for tom corpus
+# for each of the documents count the total words 
+# and the number of words that match the positive and negative dictionaries
+total.words <- integer(length(names(tom.corpus)))
+positive.words <- integer(length(names(tom.corpus)))
+negative.words <- integer(length(names(tom.corpus)))
+other.words <- integer(length(names(tom.corpus)))
+
+reviews.tdm <- TermDocumentMatrix(tom.corpus)
+
+for(index.for.document in seq(along=names(tom.corpus))) {
+  positive.words[index.for.document] <- 
+    sum(termFreq(tom.corpus[[index.for.document]], 
+    control = list(dictionary = test.positive.dictionary)))
+  negative.words[index.for.document] <- 
+    sum(termFreq(tom.corpus[[index.for.document]], 
+    control = list(dictionary = test.negative.dictionary)))  
+  total.words[index.for.document] <- 
+    length(reviews.tdm[,index.for.document][["i"]])
+  other.words[index.for.document] <- total.words[index.for.document] -
+    positive.words[index.for.document] - negative.words[index.for.document]
+  }
+
+document <- names(tom.corpus)
+tom.data.frame <- data.frame(document,total.words,
+  positive.words, negative.words, other.words, stringsAsFactors = FALSE) 
+rownames(tom.data.frame) <- paste("D",as.character(0:7),sep="")
+
+# compute text measures as percentages of words in each set
+tom.data.frame$POSITIVE <- 
+  100 * tom.data.frame$positive.words / 
+  tom.data.frame$total.words
+  
+tom.data.frame$NEGATIVE <- 
+  100 * tom.data.frame$negative.words / 
+    tom.data.frame$total.words 
+    
+# rating is embedded in the document name... extract with regular expressions
+for(index.for.document in seq(along = tom.data.frame$document)) {
+  first_split <- strsplit(tom.data.frame$document[index.for.document], 
+    split = "[_]")
+  second_split <- strsplit(first_split[[1]][2], split = "[.]")
+  tom.data.frame$rating[index.for.document] <- as.numeric(second_split[[1]][1])
+  } # end of for-loop for defining 
+
+tom.data.frame$thumbsupdown <- ifelse((tom.data.frame$rating > 5), 2, 1)
+tom.data.frame$thumbsupdown <- 
+  factor(tom.data.frame$thumbsupdown, levels = c(1,2), 
+    labels = c("DOWN","UP"))
+
+tom.movies <- data.frame(movies = 
+  c("The Effect of Gamma Rays on Man-in-the-Moon Marigolds",
+    "Blade Runner","My Cousin Vinny","Mars Attacks",
+    "Fight Club","Miss Congeniality 2","Find Me Guilty","Moneyball"))
+
+# check out the measures on Tom's ratings
+tom.data.frame.review <- 
+  cbind(tom.movies,tom.data.frame[,names(tom.data.frame)[2:9]])
+print(tom.data.frame.review)
+
+# develop predictive models using the training data
+# --------------------------------------
+# Simple difference method
+# --------------------------------------
+train.data.frame$simple <- 
+     train.data.frame$POSITIVE - train.data.frame$NEGATIVE
+
+# check out simple difference method... is there a correlation with ratings?
+with(train.data.frame, print(cor(simple, rating)))  
+
+# we use the training data to define an optimal cutoff... 
+# trees can help with finding the optimal split point for simple.difference
+try.tree <- rpart(thumbsupdown ~ simple, data = train.data.frame)
+print(try.tree)  # note that the first split value
+# an earlier analysis had this value as -0.7969266
+# create a user-defined function for the simple difference method
+predict.simple <- function(x) {
+  if (x >= -0.7969266) return("UP")
+  if (x < -0.7969266) return("DOWN")
+  }
+
+# evaluate predictive accuracy in the training data
+train.data.frame$pred.simple <- character(nrow(train.data.frame))
+for (index.for.review in seq(along = train.data.frame$pred.simple)) {
+  train.data.frame$pred.simple[index.for.review] <- 
+    predict.simple(train.data.frame$simple[index.for.review])
+  }   
+train.data.frame$pred.simple <- 
+  factor(train.data.frame$pred.simple)
+
+train.pred.simple.performance <- 
+  confusionMatrix(data = train.data.frame$pred.simple, 
+  reference = train.data.frame$thumbsupdown, positive = "UP") 
+  
+# report full set of statistics relating to predictive accuracy
+print(train.pred.simple.performance)
+
+cat("\n\nTraining set percentage correctly predicted by",
+  " simple difference method = ",
+  sprintf("%1.1f",train.pred.simple.performance$overall[1]*100)," Percent",sep="")
+
+# evaluate predictive accuracy in the test data
+# SIMPLE DIFFERENCE METHOD
+test.data.frame$simple <- 
+     test.data.frame$POSITIVE - train.data.frame$NEGATIVE
+
+test.data.frame$pred.simple <- character(nrow(test.data.frame))
+for (index.for.review in seq(along = test.data.frame$pred.simple)) {
+  test.data.frame$pred.simple[index.for.review] <- 
+    predict.simple(test.data.frame$simple[index.for.review])
+  }   
+test.data.frame$pred.simple <- 
+  factor(test.data.frame$pred.simple)
+
+test.pred.simple.performance <- 
+  confusionMatrix(data = test.data.frame$pred.simple, 
+  reference = test.data.frame$thumbsupdown, positive = "UP") 
+  
+# report full set of statistics relating to predictive accuracy
+print(test.pred.simple.performance)
+
+cat("\n\nTest set percentage correctly predicted = ",
+  sprintf("%1.1f",test.pred.simple.performance$overall[1]*100)," 
+    Percent",sep="")
+
+# --------------------------------------
+# Regression difference method
+# --------------------------------------
+# regression method for determining weights on POSITIVE AND NEGATIVE
+# fit a regression model to the training data
+regression.model <- lm(rating ~ POSITIVE + NEGATIVE, data = train.data.frame)
+print(regression.model)  # provides 5.5386 + 0.2962(POSITIVE) -0.3089(NEGATIVE)
+
+train.data.frame$regression <- 
+  predict(regression.model, newdata = train.data.frame)
+
+# determine the cutoff for regression.difference
+  try.tree <- rpart(thumbsupdown ~ regression, data = train.data.frame)
+print(try.tree)  # note that the first split is at 5.264625
+# create a user-defined function for the simple difference method
+predict.regression <- function(x) {
+  if (x >= 5.264625) return("UP")
+  if (x < 5.264625) return("DOWN")
+  }
+
+train.data.frame$pred.regression <-  character(nrow(train.data.frame))
+for (index.for.review in seq(along = train.data.frame$pred.simple)) {
+  train.data.frame$pred.regression[index.for.review] <- 
+    predict.regression(train.data.frame$regression[index.for.review])
+  }   
+train.data.frame$pred.regression <- 
+  factor(train.data.frame$pred.regression)
+
+train.pred.regression.performance <- 
+  confusionMatrix(data = train.data.frame$pred.regression, 
+  reference = train.data.frame$thumbsupdown, positive = "UP") 
+  
+# report full set of statistics relating to predictive accuracy
+print(train.pred.regression.performance)  # result 67.3 percent
+
+cat("\n\nTraining set percentage correctly predicted by regression = ",
+  sprintf("%1.1f",train.pred.regression.performance$overall[1]*100),
+    " Percent",sep="")
+
+# regression method for determining weights on POSITIVE AND NEGATIVE
+# for the test set we use the model developed on the training set
+test.data.frame$regression <- 
+  predict(regression.model, newdata = test.data.frame)
+
+test.data.frame$pred.regression <-  character(nrow(test.data.frame))
+for (index.for.review in seq(along = test.data.frame$pred.simple)) {
+  test.data.frame$pred.regression[index.for.review] <- 
+    predict.regression(test.data.frame$regression[index.for.review])
+  }   
+test.data.frame$pred.regression <- 
+  factor(test.data.frame$pred.regression)
+
+test.pred.regression.performance <- 
+  confusionMatrix(data = test.data.frame$pred.regression, 
+  reference = test.data.frame$thumbsupdown, positive = "UP") 
+  
+# report full set of statistics relating to predictive accuracy
+print(test.pred.regression.performance)  # result 67.3 percent
+
+cat("\n\nTest set percentage correctly predicted = ",
+  sprintf("%1.1f",test.pred.regression.performance$overall[1]*100),
+    " Percent",sep="")
+
+# --------------------------------------------
+# Word/item analysis method for train.corpus
+# --------------------------------------------
+# return to the training corpus to develop simple counts
+# for each of the words in the sentiment list
+# these new variables will be given the names of the words
+# to keep things simple.... there are 50 such variables/words
+# identified from an earlier analysis, as published in the book
+working.corpus <- train.corpus
+# run common code from utilities for scoring the working corpus
+# this common code uses 25 positive and 25 negative words
+# identified in an earlier analysis of these data
+source("R_utility_program_5.R")
+
+add.data.frame <- data.frame(amazing,beautiful,classic,enjoy,       
+  enjoyed,entertaining,excellent,fans,favorite,fine,fun,humor,       
+  lead,liked,love,loved,modern,nice,perfect,pretty,      
+  recommend,strong,top,wonderful,worth,bad,boring,cheap,creepy,dark,dead,    
+  death,evil,hard,kill,killed,lack,lost,miss,murder,mystery,plot,poor,    
+  sad,scary,slow,terrible,waste,worst,wrong)  
+  
+train.data.frame <- cbind(train.data.frame,add.data.frame)  
+
+# --------------------------------------------
+# Word/item analysis method for test.corpus
+# --------------------------------------------
+# return to the testing corpus to develop simple counts
+# for each of the words in the sentiment list
+# these new variables will be given the names of the words
+# to keep things simple.... there are 50 such variables/words
+working.corpus <- test.corpus
+# run common code from utilities for scoring the working corpus
+source("R_utility_program_5.R")
+
+add.data.frame <- data.frame(amazing,beautiful,classic,enjoy,       
+  enjoyed,entertaining,excellent,fans,favorite,fine,fun,humor,       
+  lead,liked,love,loved,modern,nice,perfect,pretty,      
+  recommend,strong,top,wonderful,worth,bad,boring,cheap,creepy,dark,dead,    
+  death,evil,hard,kill,killed,lack,lost,miss,murder,mystery,plot,poor,    
+  sad,scary,slow,terrible,waste,worst,wrong)  
+  
+test.data.frame <- cbind(test.data.frame,add.data.frame)  
+
+# --------------------------------------------
+# Word/item analysis method for tom.corpus
+# --------------------------------------------
+# return to the toming corpus to develop simple counts
+# for each of the words in the sentiment list
+# these new variables will be given the names of the words
+# to keep things simple.... there are 50 such variables/words
+working.corpus <- tom.corpus
+# run common code from utilities for scoring the working corpus
+source("R_utility_program_5.R")
+
+add.data.frame <- data.frame(amazing,beautiful,classic,enjoy,       
+  enjoyed,entertaining,excellent,fans,favorite,fine,fun,humor,       
+  lead,liked,love,loved,modern,nice,perfect,pretty,      
+  recommend,strong,top,wonderful,worth,bad,boring,cheap,creepy,dark,dead,    
+  death,evil,hard,kill,killed,lack,lost,miss,murder,mystery,plot,poor,    
+  sad,scary,slow,terrible,waste,worst,wrong)  
+  
+tom.data.frame <- cbind(tom.data.frame,add.data.frame)  
+
+
+# use phi coefficient... correlation with rating as index of item value
+# again we draw upon the earlier positive and negative lists 
+phi <- numeric(50)
+item <- c("amazing","beautiful","classic","enjoy",       
+  "enjoyed","entertaining","excellent","fans","favorite","fine","fun","humor",       
+  "lead","liked","love","loved","modern","nice","perfect","pretty",      
+  "recommend","strong","top","wonderful","worth",
+  "bad","boring","cheap","creepy","dark","dead",    
+  "death","evil","hard","kill","killed","lack",
+  "lost","miss","murder","mystery","plot","poor",    
+  "sad","scary","slow","terrible","waste","worst","wrong")
+item.analysis.data.frame <- data.frame(item,phi)
+item.place <- 14:63
+for (index.for.column in 1:50) {
+  item.analysis.data.frame$phi[index.for.column] <- 
+    cor(train.data.frame[, item.place[index.for.column]],train.data.frame[,8])
+  }
+
+# sort by absolute value of the phi coefficient with the rating  
+item.analysis.data.frame$absphi <- abs(item.analysis.data.frame$phi)
+item.analysis.data.frame <- 
+  item.analysis.data.frame[sort.list(item.analysis.data.frame$absphi,
+    decreasing = TRUE),]
+    
+# subset of words with phi coefficients greater than 0.05 in absolute value    
+selected.items.data.frame <- 
+  subset(item.analysis.data.frame, subset = (absphi > 0.05))
+  
+# use the sign of the phi coefficient as the item weight
+selected.positive.data.frame <-
+  subset(selected.items.data.frame, subset = (phi > 0.0))
+selected.positive.words <- as.character(selected.positive.data.frame$item)  
+  
+selected.negative.data.frame <-
+  subset(selected.items.data.frame, subset = (phi < 0.0))  
+selected.negative.words <- as.character(selected.negative.data.frame$item)    
+
+# these lists define new dictionaries for scoring 
+
+reviews.tdm <- TermDocumentMatrix(train.corpus)
+
+temp.positive.score <- integer(length(names(train.corpus)))
+temp.negative.score <- integer(length(names(train.corpus)))
+for(index.for.document in seq(along=names(train.corpus))) {
+  temp.positive.score[index.for.document] <- 
+    sum(termFreq(train.corpus[[index.for.document]], 
+    control = list(dictionary = selected.positive.words)))
+  temp.negative.score[index.for.document] <- 
+    sum(termFreq(train.corpus[[index.for.document]], 
+    control = list(dictionary = selected.negative.words)))  
+  }
+  
+train.data.frame$item.analysis.score <- 
+  temp.positive.score - temp.negative.score
+  
+# use the training set and tree-structured modeling to determine the cutoff  
+  try.tree<-rpart(thumbsupdown ~ item.analysis.score, data = train.data.frame)
+print(try.tree)  # note that the first split is at -0.5
+# create a user-defined function for the simple difference method
+predict.item.analysis <- function(x) {
+  if (x >= -0.5) return("UP")
+  if (x < -0.5) return("DOWN")
+  }
+  
+train.data.frame$pred.item.analysis <-  character(nrow(train.data.frame))
+for (index.for.review in seq(along = train.data.frame$pred.simple)) {
+  train.data.frame$pred.item.analysis[index.for.review] <- 
+  predict.item.analysis(train.data.frame$item.analysis.score[index.for.review])
+  }   
+train.data.frame$pred.item.analysis <- 
+  factor(train.data.frame$pred.item.analysis)
+
+train.pred.item.analysis.performance <- 
+  confusionMatrix(data = train.data.frame$pred.item.analysis, 
+  reference = train.data.frame$thumbsupdown, positive = "UP") 
+  
+# report full set of statistics relating to predictive accuracy
+print(train.pred.item.analysis.performance)  # result 73.9 Percent
+
+cat("\n\nTraining set percentage correctly predicted by item analysis = ",
+  sprintf("%1.1f",train.pred.item.analysis.performance$overall[1]*100),
+    " Percent",sep="")  
+    
+# use item analysis method of scoring with the test set
+
+reviews.tdm <- TermDocumentMatrix(test.corpus)
+
+temp.positive.score <- integer(length(names(test.corpus)))
+temp.negative.score <- integer(length(names(test.corpus)))
+for(index.for.document in seq(along=names(test.corpus))) {
+  temp.positive.score[index.for.document] <- 
+    sum(termFreq(test.corpus[[index.for.document]], 
+    control = list(dictionary = selected.positive.words)))
+  temp.negative.score[index.for.document] <- 
+    sum(termFreq(test.corpus[[index.for.document]], 
+    control = list(dictionary = selected.negative.words)))  
+  }
+  
+test.data.frame$item.analysis.score <- 
+  temp.positive.score - temp.negative.score
+    
+test.data.frame$pred.item.analysis <-  character(nrow(test.data.frame))
+for (index.for.review in seq(along = test.data.frame$pred.simple)) {
+  test.data.frame$pred.item.analysis[index.for.review] <- 
+  predict.item.analysis(test.data.frame$item.analysis.score[index.for.review])
+  }   
+test.data.frame$pred.item.analysis <- 
+  factor(test.data.frame$pred.item.analysis)
+
+test.pred.item.analysis.performance <- 
+  confusionMatrix(data = test.data.frame$pred.item.analysis, 
+  reference = test.data.frame$thumbsupdown, positive = "UP") 
+  
+# report full set of statistics relating to predictive accuracy
+print(test.pred.item.analysis.performance)  # result 74 Percent
+
+cat("\n\nTest set percentage correctly predicted by item analysis = ",
+  sprintf("%1.1f",test.pred.item.analysis.performance$overall[1]*100),
+    " Percent",sep="")  
+    
+# --------------------------------------
+# Logistic regression method
+# --------------------------------------
+text.classification.model <- {thumbsupdown ~ amazing + beautiful + 
+  classic + enjoy + enjoyed + 
+  entertaining + excellent +   
+  fans + favorite + fine + fun + humor + lead + liked +       
+  love + loved + modern + nice + perfect + pretty + 
+  recommend + strong + top + wonderful + worth +       
+  bad + boring + cheap + creepy + dark + dead + 
+  death + evil + hard + kill +    
+  killed + lack + lost + miss + murder + mystery + 
+  plot + poor + sad + scary +   
+  slow + terrible + waste + worst + wrong}
+
+# full logistic regression model
+logistic.regression.fit <- glm(text.classification.model, 
+  family=binomial(link=logit), data = train.data.frame)
+print(summary(logistic.regression.fit))
+
+# obtain predicted probability values for training set
+logistic.regression.pred.prob <- 
+  as.numeric(predict(logistic.regression.fit, newdata = train.data.frame,
+  type="response")) 
+
+train.data.frame$pred.logistic.regression <- 
+  ifelse((logistic.regression.pred.prob > 0.5),2,1)
+
+train.data.frame$pred.logistic.regression <- 
+  factor(train.data.frame$pred.logistic.regression, levels = c(1,2), 
+    labels = c("DOWN","UP"))
+
+train.pred.logistic.regression.performance <- 
+  confusionMatrix(data = train.data.frame$pred.logistic.regression, 
+  reference = train.data.frame$thumbsupdown, positive = "UP") 
+
+# report full set of statistics relating to predictive accuracy
+print(train.pred.logistic.regression.performance)  # result 75.2 Percent
+
+cat("\n\nTraining set percentage correct by logistic regression = ",
+  sprintf("%1.1f",train.pred.logistic.regression.performance$overall[1]*100),
+    " Percent",sep="")
+    
+# now we use the model developed on the training set with the test set
+# obtain predicted probability values for test set
+logistic.regression.pred.prob <- 
+  as.numeric(predict(logistic.regression.fit, newdata = test.data.frame,
+  type="response")) 
+
+test.data.frame$pred.logistic.regression <- 
+  ifelse((logistic.regression.pred.prob > 0.5),2,1)
+
+test.data.frame$pred.logistic.regression <- 
+  factor(test.data.frame$pred.logistic.regression, levels = c(1,2), 
+    labels = c("DOWN","UP"))
+
+test.pred.logistic.regression.performance <- 
+  confusionMatrix(data = test.data.frame$pred.logistic.regression, 
+  reference = test.data.frame$thumbsupdown, positive = "UP") 
+
+# report full set of statistics relating to predictive accuracy
+print(test.pred.logistic.regression.performance)  # result 72.6 Percent
+
+cat("\n\nTest set percentage correctly predicted by logistic regression = ",
+  sprintf("%1.1f",test.pred.logistic.regression.performance$overall[1]*100),
+    " Percent",sep="")
+
+# --------------------------------------
+# Support vector machines
+# --------------------------------------
+# determine tuning parameters prior to fitting model
+train.tune <- tune(svm, text.classification.model, data = train.data.frame,
+                   ranges = list(gamma = 2^(-8:1), cost = 2^(0:4)),
+                   tunecontrol = tune.control(sampling = "fix"))
+# display the tuning results (in text format)
+print(train.tune)
+
+# fit the support vector machine to the training data using tuning parameters
+train.data.frame.svm <- svm(text.classification.model, data = train.data.frame, 
+  cost=4, gamma=0.00390625, probability = TRUE)
+  
+train.data.frame$pred.svm <- predict(train.data.frame.svm, type="class",
+newdata=train.data.frame)
+
+train.pred.svm.performance <- 
+  confusionMatrix(data = train.data.frame$pred.svm, 
+  reference = train.data.frame$thumbsupdown, positive = "UP") 
+
+# report full set of statistics relating to predictive accuracy
+print(train.pred.svm.performance)  # result 79.0 Percent
+
+cat("\n\nTraining set percentage correctly predicted by SVM = ",
+  sprintf("%1.1f",train.pred.svm.performance$overall[1]*100),
+    " Percent",sep="")
+
+# use the support vector machine model identified in the training set
+# to do text classification on the test set
+test.data.frame$pred.svm <- predict(train.data.frame.svm, type="class",
+newdata=test.data.frame)
+
+test.pred.svm.performance <- 
+  confusionMatrix(data = test.data.frame$pred.svm, 
+  reference = test.data.frame$thumbsupdown, positive = "UP") 
+
+# report full set of statistics relating to predictive accuracy
+print(test.pred.svm.performance)  # result 71.6 Percent
+
+cat("\n\nTest set percentage correctly predicted by SVM = ",
+  sprintf("%1.1f",test.pred.svm.performance$overall[1]*100),
+    " Percent",sep="")
+
+# --------------------------------------
+# Random forests
+# --------------------------------------
+# fit random forest model to the training data
+set.seed (9999)  # for reproducibility
+train.data.frame.rf <- randomForest(text.classification.model, 
+  data=train.data.frame, mtry=3, importance=TRUE, na.action=na.omit) 
+
+# review the random forest solution      
+print(train.data.frame.rf)  
+
+# check importance of the individual explanatory variables 
+pdf(file = "fig_sentiment_random_forest_importance.pdf", 
+width = 11, height = 8.5)
+varImpPlot(train.data.frame.rf, main = "")
+dev.off()
+
+train.data.frame$pred.rf <- predict(train.data.frame.rf, type="class", 
+  newdata = train.data.frame)
+
+train.pred.rf.performance <- 
+  confusionMatrix(data = train.data.frame$pred.rf, 
+  reference = train.data.frame$thumbsupdown, positive = "UP") 
+
+# report full set of statistics relating to predictive accuracy
+print(train.pred.rf.performance)  # result 82.2 Percent
+
+cat("\n\nTraining set percentage correctly predicted by random forests = ",
+  sprintf("%1.1f",train.pred.rf.performance$overall[1]*100),
+    " Percent",sep="")
+    
+# use the model fit to the training data to predict the the test data     
+test.data.frame$pred.rf <- predict(train.data.frame.rf, type="class", 
+  newdata = test.data.frame)
+
+test.pred.rf.performance <- 
+  confusionMatrix(data = test.data.frame$pred.rf, 
+  reference = test.data.frame$thumbsupdown, positive = "UP") 
+
+# report full set of statistics relating to predictive accuracy
+print(test.pred.rf.performance)  # result 74.0 Percent
+
+cat("\n\nTest set percentage correctly predicted by random forests = ",
+  sprintf("%1.1f",test.pred.rf.performance$overall[1]*100),
+    " Percent",sep="")    
+ 
+# measurement model performance summary
+methods <- c("Simple difference","Regression difference",
+  "Word/item analysis","Logistic regression",
+  "Support vector machines","Random forests")
+methods.performance.data.frame <- data.frame(methods)
+
+methods.performance.data.frame$training <- 
+  c(train.pred.simple.performance$overall[1]*100,
+    train.pred.regression.performance$overall[1]*100,
+    train.pred.item.analysis.performance$overall[1]*100,
+    train.pred.logistic.regression.performance$overall[1]*100,
+    train.pred.svm.performance$overall[1]*100,
+    train.pred.rf.performance$overall[1]*100)
+  
+methods.performance.data.frame$test <-
+  c(test.pred.simple.performance$overall[1]*100,
+    test.pred.regression.performance$overall[1]*100,
+    test.pred.item.analysis.performance$overall[1]*100,
+    test.pred.logistic.regression.performance$overall[1]*100,
+    test.pred.svm.performance$overall[1]*100,
+    test.pred.rf.performance$overall[1]*100)
+
+# random forest predictions for Tom's movie reviews
+tom.data.frame$pred.rf <- predict(train.data.frame.rf, type="class", 
+  newdata = tom.data.frame)
+  
+print(tom.data.frame[,c("thumbsupdown","pred.rf")])  
+
+tom.pred.rf.performance <- 
+  confusionMatrix(data = tom.data.frame$pred.rf, 
+  reference = tom.data.frame$thumbsupdown, positive = "UP") 
+
+# report full set of statistics relating to predictive accuracy
+print(tom.pred.rf.performance)  # result 74.0 Percent
+
+cat("\n\nTraining set percentage correctly predicted by random forests = ",    
+  sprintf("%1.1f",tom.pred.rf.performance$overall[1]*100),
+    " Percent",sep="")    
+
+# building a simple tree to classify reviews
+simple.tree <- rpart(text.classification.model, 
+  data=train.data.frame,)
+
+# plot the regression tree result from rpart
+pdf(file = "fig_sentiment_simple_tree_classifier.pdf", width = 8.5, height = 8.5)
+prp(simple.tree, main="",
+  digits = 3,  # digits to display in terminal nodes
+  nn = TRUE,  # display the node numbers
+  fallen.leaves = TRUE,  # put the leaves on the bottom of the page
+  branch = 0.5,  # change angle of branch lines
+  branch.lwd = 2,  # width of branch lines
+  faclen = 0,  # do not abbreviate factor levels
+  trace = 1,  # print the automatically calculated cex
+  shadow.col = 0,  # no shadows under the leaves
+  branch.lty = 1,  # draw branches using dotted lines
+  split.cex = 1.2,  # make the split text larger than the node text
+  split.prefix = "is ",  # put "is" before split text
+  split.suffix = "?",  # put "?" after split text
+  split.box.col = "blue",  # lightgray split boxes (default is white)
+  split.col = "white",  # color of text in split box 
+  split.border.col = "blue",  # darkgray border on split boxes
+  split.round = .25)  # round the split box corners a tad
+dev.off()
+
+# simple tree predictions for Tom's movie reviews
+tom.data.frame$pred.simple.tree <- predict(simple.tree, type="class", 
+  newdata = tom.data.frame)
+
+print(tom.data.frame[,c("thumbsupdown","pred.rf","pred.simple.tree")])  
+
+
+# Game-day Simulator for Baseball (Python)
+
+from __future__ import division, print_function
+
+import numpy as np
+from scipy.stats import nbinom
+
+def simulator(home_mean, away_mean, niterations):
+    # estimates probability of home team win
+    seed(1234)  # set to obtain reproducible results
+    home_game_score = [0] * niterations
+    away_game_score = [0] * niterations
+    home_win = [0] * niterations
+    i = 0
+    while (i < niterations):
+        home_game_score[i] = \
+            nbinom.rvs(n = 4.0, p = 4.0/(4.0 + home_mean), size = 1)[0] 
+        away_game_score[i] = \
+            nbinom.rvs(n = 4.0, p = 4.0/(4.0 + away_mean), size = 1)[0]         
+        if (home_game_score[i] > away_game_score[i]):
+            home_win[i] = 1
+        if ((away_game_score[i] > home_game_score[i]) or \
+            (away_game_score[i] < home_game_score[i])):
+            i = i + 1 
+    n_home_win = sum(home_win)
+    return n_home_win / niterations        
+ 
+niterations = 100000  # use smaller number for testing
+# probability matrix for results... home team rows, away team columns
+probmat = array([[0.0] * 9] * 9)
+
+# matrix representation of home and away team runs for table
+homemat = array([[9] * 9, [8] * 9, [7] * 9, [6] * 9, [5] * 9,\
+    [4] * 9, [3] * 9, [2] *9, [1] * 9])
+awayrow = array([1, 2, 3, 4, 5, 6, 7, 8, 9])    
+awaymat = array([awayrow] * 9)
+
+# generate table of probabilities
+for index_home in range(9):
+    for index_away in range(9):
+        if (homemat[index_home,index_away] != awaymat[index_home,index_away]):
+            print(index_home, index_away)
+            probmat[index_home, index_away] = \
+                simulator(float(homemat[index_home, index_away]), \
+                          float(awaymat[index_home, index_away]), niterations)
+            
+print(probmat)                
+
+# Regression Modeling with California Housing Values (Python)
+
+# prepare for Python version 3x features and functions
+from __future__ import division, print_function
+
+# import packages for analysis and modeling
+import pandas as pd  # data frame operations
+from pandas.tools.plotting import scatter_matrix  # scatter plot matrix
+import numpy as np  # arrays and math functions
+from scipy.stats import uniform  # for training-and-test split
+import statsmodels.api as sm  # statistical models (including regression)
+import statsmodels.formula.api as smf  # R-like model specification
+from sklearn.tree import DecisionTreeRegressor  # machine learning tree
+from sklearn.ensemble import RandomForestRegressor # ensemble method
+
+# read in the housing data with white-space delimiters
+prelim_houses = pd.read_table('houses_data.txt', header = None, \
+     delim_whitespace = True, skipinitialspace = True, \
+     names = ['value', 'income', 'age', 'rooms', 'bedrooms', \
+     'pop', 'hh', 'latitude', 'longitude'])
+prelim_houses['idx'] = range(len(prelim_houses))  # for use as index
+houses = prelim_houses.set_index(['idx']) 
+     
+print(houses.shape)  # check the structure of the data frame
+print(houses.head())
+
+# compute descriptive statistics for original variables
+print(houses.describe())
+
+# computed variables for linear model used by Pace and Barry (1997)
+houses['log_value'] = np.log(houses['value'])
+houses['income_squared'] = np.power(houses['income'], 2) 
+houses['income_cubed'] = np.power(houses['income'], 3) 
+houses['log_age'] = np.log(houses['age'])   
+houses['log_pc_rooms'] = np.log(np.divide(houses['rooms'], houses['pop']))       
+houses['log_pc_bedrooms'] = \
+    np.log(np.divide(houses['bedrooms'], houses['pop']))                   
+houses['log_pop_hh'] = np.divide(houses['pop'], houses['hh'])           
+houses['log_hh'] = np.log(houses['hh'])   
+
+# structure of the Pace and Barry (1997) model for baseline for comparisons
+pace_barry_model = 'log_value ~ income + income_squared + \
+    income_cubed + log_age + log_pc_rooms + log_pc_bedrooms + \
+    log_pop_hh + log_hh'
+
+# for comparison lets look at a simple model with the original variables
+simple_model = 'log_value ~ income + age + rooms + bedrooms + \
+    pop + hh' 
+  
+# original variables plus variables that add value for trees 
+# that is... variables that are not simple monotonic transformations
+# of the original explanatory variables
+full_model = 'log_value ~ income + age + rooms + bedrooms + \
+  pop + hh + log_pc_rooms + log_pc_bedrooms + log_pop_hh'  
+  
+# define the bounding box for selecting the area
+# here we are selecting the San Diego region
+BB_TOP = 33
+BB_BOTTOM = 32
+BB_RIGHT = -116.75
+BB_LEFT = -125
+
+houses_selected = houses[houses['latitude'] < BB_TOP]
+houses_selected = houses_selected[houses_selected['longitude'] < BB_RIGHT]
+houses_selected = houses_selected[houses_selected['latitude'] > BB_BOTTOM]
+houses_selected = houses_selected[houses_selected['longitude'] > BB_LEFT]
+
+# examine structure of selected block groups
+print(houses_selected.shape)
+print(houses_selected.head())
+
+# employ training-and-test regimen for model validation
+np.random.seed(4444)
+houses_selected['runiform'] = uniform.rvs(loc = 0, scale = 1, size = len(houses_selected))
+houses_selected_train = houses_selected[houses_selected['runiform'] >= 0.33]
+houses_selected_test = houses_selected[houses_selected['runiform'] < 0.33]
+# check training data frame
+print('\nhouses_selected_train data frame (rows, columns): ',\
+    houses_selected_train.shape)
+print(houses_selected_train.head())
+# check test data frame
+print('\nhouses_selected_test data frame (rows, columns): ',\
+    houses_selected_test.shape)
+print(houses_selected_test.head())
+        
+# examine the correlations across the variables before we begin modeling
+houses_train_df_vars = houses_selected_train.loc[ : ,['log_value', 'income',\
+    'log_pc_rooms', 'log_pc_bedrooms', 'rooms', 'bedrooms', 'hh', \
+    'age', 'pop', 'log_pop_hh']]
+print(houses_train_df_vars.corr())
+    
+# scatter plot matrix (splom) demonstration
+houses_train_splom_vars = \
+    houses_selected_train.loc[:, ['log_value', 'income', 'age', 'rooms']]
+scatter_matrix(houses_train_splom_vars)   
+
+# --------------------------------------------
+# Linear regression a la Pace and Barry (1997)
+# --------------------------------------------
+# fit the model to the training set
+pace_barry_train_fit = smf.ols(pace_barry_model, \
+    data = houses_selected_train).fit()
+# summary of model fit to the training set
+print(pace_barry_train_fit.summary())
+# training set predictions from the model fit to the training set
+houses_selected_train['predict_log_value'] = pace_barry_train_fit.fittedvalues
+# test set predictions from the model fit to the training set
+houses_selected_test['predict_log_value'] = pace_barry_train_fit.predict(houses_selected_test)
+
+# compute the proportion of response variance for training data
+pace_and_barry_train_result = \
+    round(np.power(houses_selected_train['log_value']\
+        .corr(houses_selected_train['predict_log_value']),2),3)
+print('\nPace and Barry Proportion of Training Set Variance Accounted for: ',\
+    pace_and_barry_train_result)
+
+# compute the proportion of response variance
+# accounted for when predicting out-of-sample
+pace_and_barry_test_result = \
+    round(np.power(houses_selected_test['log_value']\
+        .corr(houses_selected_test['predict_log_value']),2),3)
+print('\nPace and Barry Proportion of Test Set Variance Accounted for: ',\
+    pace_and_barry_test_result)
+
+# --------------------------------------
+# Tree-structured regression (simple)
+# --------------------------------------
+# try tree-structured regression on the original explantory variables
+# note that one of the advantages of trees is no need for transformations
+# of the explanatory variables... sklearn DecisionTreeRegressor
+tree_model_maker = DecisionTreeRegressor(random_state = 9999, max_depth = 5)
+
+y_train = houses_selected_train.loc[:, ['log_value']]
+
+# simple model has six predictors
+X_train_simple = houses_selected_train.loc[:, \
+    ['income', 'age', 'rooms', 'bedrooms', 'pop', 'hh']]
+X_test_simple = houses_selected_test.loc[:, \
+    ['income', 'age', 'rooms', 'bedrooms', 'pop', 'hh']]
+
+tree_model_fit = tree_model_maker.fit(X_train_simple, y_train)
+
+# compute the proportion of response variance for training data
+houses_selected_train['simple_tree_predict_log_value'] =\
+    tree_model_fit.predict(X_train_simple)
+simple_tree_train_result = \
+    round(np.power(houses_selected_train['log_value']\
+        .corr(houses_selected_train['simple_tree_predict_log_value']),2),3)
+print('\nSimple Tree Proportion of Training Set Variance Accounted for: ',\
+    simple_tree_train_result)
+
+# compute the proportion of response variance for test data
+houses_selected_test['simple_tree_predict_log_value'] =\
+    tree_model_fit.predict(X_test_simple)
+simple_tree_test_result = \
+    round(np.power(houses_selected_test['log_value']\
+        .corr(houses_selected_test['simple_tree_predict_log_value']),2),3)
+print('\nSimple Tree Proportion of Test Set Variance Accounted for: ',\
+    simple_tree_test_result)
+
+# --------------------------------------
+# Tree-structured regression (full)
+# --------------------------------------
+# same method as for simple tree
+tree_model_maker = DecisionTreeRegressor(random_state = 9999, max_depth = 5)
+
+y_train = houses_selected_train.loc[:, ['log_value']]
+
+# full model has more predictors
+X_train_full = houses_selected_train.loc[:, \
+    ['income', 'age', 'rooms', 'bedrooms',\
+        'pop', 'hh', 'log_pc_rooms', 'log_pc_bedrooms', 'log_pop_hh']]
+X_test_full = houses_selected_test.loc[:, \
+    ['income', 'age', 'rooms', 'bedrooms',\
+        'pop', 'hh', 'log_pc_rooms', 'log_pc_bedrooms', 'log_pop_hh']]
+
+tree_model_fit = tree_model_maker.fit(X_train_full, y_train)
+
+# compute the proportion of response variance for training data
+houses_selected_train['full_tree_predict_log_value'] =\
+    tree_model_fit.predict(X_train_full)
+full_tree_train_result = \
+    round(np.power(houses_selected_train['log_value']\
+        .corr(houses_selected_train['full_tree_predict_log_value']),2),3)
+print('\nFull Tree Proportion of Training Set Variance Accounted for: ',\
+    full_tree_train_result)
+
+# compute the proportion of response variance for test data
+houses_selected_test['full_tree_predict_log_value'] =\
+    tree_model_fit.predict(X_test_full)
+full_tree_test_result = \
+    round(np.power(houses_selected_test['log_value']\
+        .corr(houses_selected_test['full_tree_predict_log_value']),2),3)
+print('\nFull Tree Proportion of Test Set Variance Accounted for: ',\
+    full_tree_test_result)
+
+# --------------------------------------
+# Random forests (simple)
+# --------------------------------------
+rf_model_maker = RandomForestRegressor(random_state = 9999)
+
+y_train = houses_selected_train.loc[:, ['log_value']]
+
+# simple model has more predictors
+X_train_simple = houses_selected_train.loc[:, \
+    ['income', 'age', 'rooms', 'bedrooms', 'pop', 'hh']]
+X_test_simple = houses_selected_test.loc[:, \
+    ['income', 'age', 'rooms', 'bedrooms', 'pop', 'hh']]
+
+rf_model_fit = rf_model_maker.fit(X_train_simple, y_train)
+
+# compute the proportion of response variance for training data
+houses_selected_train['simple_rf_predict_log_value'] =\
+    rf_model_fit.predict(X_train_simple)
+simple_rf_train_result = \
+    round(np.power(houses_selected_train['log_value']\
+        .corr(houses_selected_train['simple_rf_predict_log_value']),2),3)
+print('\nSimple Random Forest Prop Training Set Variance Accounted for: ',\
+    simple_rf_train_result)
+
+# compute the proportion of response variance for test data
+houses_selected_test['simple_rf_predict_log_value'] =\
+    rf_model_fit.predict(X_test_simple)
+simple_rf_test_result = \
+    round(np.power(houses_selected_test['log_value']\
+        .corr(houses_selected_test['simple_rf_predict_log_value']),2),3)
+print('\nSimple Random Forest Prop of Test Set Variance Accounted for: ',\
+    simple_rf_test_result)
+
+# --------------------------------------
+# Random forests (full)
+# --------------------------------------
+rf_model_maker = RandomForestRegressor(random_state = 9999)
+
+y_train = houses_selected_train.loc[:, ['log_value']]
+
+# full model has more predictors
+X_train_full = houses_selected_train.loc[:, \
+    ['income', 'age', 'rooms', 'bedrooms',\
+        'pop', 'hh', 'log_pc_rooms', 'log_pc_bedrooms', 'log_pop_hh']]
+X_test_full = houses_selected_test.loc[:, \
+    ['income', 'age', 'rooms', 'bedrooms',\
+        'pop', 'hh', 'log_pc_rooms', 'log_pc_bedrooms', 'log_pop_hh']]
+
+rf_model_fit = rf_model_maker.fit(X_train_full, y_train)
+
+# compute the proportion of response variance for training data
+houses_selected_train['full_rf_predict_log_value'] =\
+    rf_model_fit.predict(X_train_full)
+full_rf_train_result = \
+    round(np.power(houses_selected_train['log_value']\
+        .corr(houses_selected_train['full_rf_predict_log_value']),2),3)
+print('\nFull Random Forest Prop of Training Set Variance Accounted for: ',\
+    full_rf_train_result)
+
+# compute the proportion of response variance for test data
+houses_selected_test['full_rf_predict_log_value'] =\
+    rf_model_fit.predict(X_test_full)
+full_rf_test_result = \
+    round(np.power(houses_selected_test['log_value']\
+        .corr(houses_selected_test['full_rf_predict_log_value']),2),3)
+print('\nFull Random Forest Prop of Test Set Variance Accounted for: ',\
+    full_rf_test_result)
+
+# --------------------------------------
+# Geographically weighted regression
+# --------------------------------------    
+# exercise for the student
+# use rpy2 to obtain results from R
+full_gwr_train_result = None
+full_gwr_test_result = None
+
+# --------------------------------------
+# Gather results for a single report
+# --------------------------------------     
+# measurement model performance summary
+table_data = {'method' : ['Linear regression Pace and Barry (1997)',\
+    'Tree-structured regression (simple model)',\
+    'Tree-structured regression (full model)',\
+    'Random forests (simple model)',\
+    'Random forests (full model)',\
+    'Geographically weighted regression (GWR)'],\
+    'Training Set Result' : [pace_and_barry_train_result,\
+    simple_tree_train_result,\
+    full_tree_train_result,\
+    simple_rf_train_result,\
+    full_rf_train_result,\
+    full_gwr_train_result],\
+    'Test Set Result' : [pace_and_barry_test_result,\
+    simple_tree_test_result,\
+    full_tree_test_result,\
+    simple_rf_test_result,\
+    full_rf_test_result,\
+    full_gwr_test_result]}
+  
+table_data_frame = pd.DataFrame(table_data,\
+    columns = ['method', 'Training Set Result', 'Test Set Result'])  
+    
+print(table_data_frame)    
+
+# --------------------------------------------------
+# we have been using a simple training-and-test split for validation
+# an alternative is multi-fold cross-validation, as shown here
+# for the simple tree-structured regression model
+
+from sklearn import cross_validation
+
+# specify number of folds for multi-fold cross-validation
+# a simple training-and-test regimen would have two folds
+specified_n_folds = 5
+
+# specify the modeling technique or method of analysis
+tree_model_maker = DecisionTreeRegressor(random_state = 9999, max_depth = 5)
+
+# specify the response variable 
+y = houses_selected.loc[:, ['log_value']]
+
+# specify the explanatory variables 
+X = houses_selected.loc[:, ['income', 'age', 'rooms', 'bedrooms', 'pop', 'hh']]
+
+# specify cross-validation method, including number of folds
+cvfold = cross_validation.KFold(len(y), n_folds = specified_n_folds,\
+    indices = False)
+
+# initialize list for storing cross-validation results
+cv_results = []
+
+# iterate across the folds fitting to train, testing on test
+for train, test in cvfold:
+
+    # define training and test sets for this fold
+    X_train, X_test, y_train, y_test = X[train], X[test], y[train], y[test]
+       
+    # fit to training data for this fold
+    tree_model_fit = tree_model_maker.fit(X_train, y_train)
+        
+    # compute proportion of response variance accounted 
+    # for in the test set in this fold, and add to the
+    # list of cross-validation results
+    y_test_predict = tree_model_fit.predict(X_test)
+    cv_fold_result = np.power(np.corrcoef(y_test.T, y_test_predict),2)
+    cv_results.append(cv_fold_result[0, 1])  
+
+print('\nProportion of Training Set Variance Accounted for ',\
+    'using ', specified_n_folds, 'Folds in Cross-Validation:',
+    round(np.mean(cv_results) ,3))
+
+# Evaluating Predictive Accuracy of a Binary Classifier (Python)
+
+# Evaluating Predictive Accuracy of a Binary Classifier (Python)
+
+def evaluate_classifier(predicted, observed):
+    import pandas as pd 
+    if(len(predicted) != len(observed)):
+        print('\nevaluate_classifier error:',\
+             ' predicted and observed must be the same length\n')
+        return(None) 
+    if(len(set(predicted)) != 2):
+        print('\nevaluate_classifier error:',\
+              ' predicted must be binary\n')
+        return(None)          
+    if(len(set(observed)) != 2):
+        print('\nevaluate_classifier error:',\
+              ' observed must be binary\n')
+        return(None)          
+
+    predicted_data = predicted
+    observed_data = observed
+    input_data = {'predicted': predicted_data,'observed':observed_data}
+    input_data_frame = pd.DataFrame(input_data)
+    
+    cmat = pd.crosstab(input_data_frame['predicted'],\
+        input_data_frame['observed']) 
+    a = float(cmat.ix[0,0])
+    b = float(cmat.ix[0,1])
+    c = float(cmat.ix[1,0]) 
+    d = float(cmat.ix[1,1])
+    n = a + b + c + d
+    predictive_accuracy = (a + d)/n
+    true_positive_rate = a / (a + c)
+    false_positive_rate = b / (b + d)
+    precision = a / (a + b)
+    specificity = 1 - false_positive_rate   
+    expected_accuracy = (((a + b)*(a + c)) + ((b + d)*(c + d)))/(n * n)
+    kappa = (predictive_accuracy - expected_accuracy)\
+       /(1 - expected_accuracy)   
+    return(a, b, c, d, predictive_accuracy, true_positive_rate, specificity,\
+        false_positive_rate, precision, expected_accuracy, kappa)
+
+            
+            
+# Text Measures for Sentiment Analysis (Python)
+
+def get_text_measures(corpus):
+    # individually score each of the twenty-five selected positive words 
+    # for each document in the working corpus... poviding new text measures
+
+    # initialize the list structures for each positive word
+    beautiful = []; best =  []; better =  []; classic = [];
+    enjoy = []; enough = []; entertaining = []; excellent = [];
+    fans =  []; fun =  []; good =  []; great = []; interesting =  [];  
+    like =  []; love =  []; nice = []; perfect =  []; pretty =  [];  
+    right =  []; top = []; well = [];  
+    won = []; wonderful = [];  work = []; worth = []
+        
+    # initialize the list structures for each negative word
+    bad = []; boring = [];    creepy = [];    dark = []; 
+    dead = []; death =  []; evil = []; fear = []; 
+    funny = []; hard = []; kill = []; killed = []; 
+    lack =  []; lost =  []; mystery = []; plot = []; 
+    poor = []; problem = []; sad = []; scary = []; 
+    slow = []; terrible = []; waste = []; worst = []; wrong  = []
+
+    for text in corpus:
+        beautiful.append(len([w for w in text.split() if w == 'beautiful']))
+        best.append(len([w for w in text.split() if w == 'best']))
+        better.append(len([w for w in text.split() if w == 'better']))
+        classic.append(len([w for w in text.split() if w == 'classic']))
+
+        enjoy.append(len([w for w in text.split() if w == 'enjoy']))
+        enough.append(len([w for w in text.split() if w == 'enough']))
+        entertaining.append(len([w for w in text.split() if w == 'entertaining']))
+        excellent.append(len([w for w in text.split() if w == 'excellent']))
+
+        fans.append(len([w for w in text.split() if w == 'fans']))
+        fun.append(len([w for w in text.split() if w == 'fun']))
+        good.append(len([w for w in text.split() if w == 'good']))
+        great.append(len([w for w in text.split() if w == 'great']))
+
+        interesting.append(len([w for w in text.split() if w == 'interesting']))
+        like.append(len([w for w in text.split() if w == 'like']))
+        love.append(len([w for w in text.split() if w == 'love']))
+        nice.append(len([w for w in text.split() if w == 'nice']))
+
+        perfect.append(len([w for w in text.split() if w == 'perfect']))
+        pretty.append(len([w for w in text.split() if w == 'pretty']))
+        right.append(len([w for w in text.split() if w == 'right']))
+        top.append(len([w for w in text.split() if w == 'top']))
+
+        well.append(len([w for w in text.split() if w == 'well']))
+        won.append(len([w for w in text.split() if w == 'won']))
+        wonderful.append(len([w for w in text.split() if w == 'wonderful']))
+        work.append(len([w for w in text.split() if w == 'work']))
+        worth.append(len([w for w in text.split() if w == 'worth']))
+
+    # individually score each of the twenty-five selected negative words 
+    # for each document in the working corpus... poviding new text measures
+   
+        bad.append(len([w for w in text.split() if w == 'bad']))
+        boring.append(len([w for w in text.split() if w == 'boring']))
+        creepy.append(len([w for w in text.split() if w == 'creepy']))
+        dark.append(len([w for w in text.split() if w == 'dark']))
+
+        dead.append(len([w for w in text.split() if w == 'dead']))
+        death.append(len([w for w in text.split() if w == 'death']))
+        evil.append(len([w for w in text.split() if w == 'evil']))
+        fear.append(len([w for w in text.split() if w == 'fear']))
+
+        funny.append(len([w for w in text.split() if w == 'funny']))
+        hard.append(len([w for w in text.split() if w == 'hard']))
+        kill.append(len([w for w in text.split() if w == 'kill']))
+        killed.append(len([w for w in text.split() if w == 'killed']))
+
+        lack.append(len([w for w in text.split() if w == 'lack']))
+        lost.append(len([w for w in text.split() if w == 'lost']))
+        mystery.append(len([w for w in text.split() if w == 'mystery']))
+        plot.append(len([w for w in text.split() if w == 'plot']))
+
+        poor.append(len([w for w in text.split() if w == 'poor']))
+        problem.append(len([w for w in text.split() if w == 'problem']))
+        sad.append(len([w for w in text.split() if w == 'sad']))
+        scary.append(len([w for w in text.split() if w == 'scary']))
+
+        slow.append(len([w for w in text.split() if w == 'slow']))
+        terrible.append(len([w for w in text.split() if w == 'terrible']))
+        waste.append(len([w for w in text.split() if w == 'waste']))
+        worst.append(len([w for w in text.split() if w == 'worst']))
+        wrong.append(len([w for w in text.split() if w == 'wrong']))
+
+    # creat dictionary data structure as a preliminary 
+    # to creating the data frame for the fifty text measures
+    add_corpus_data = {'beautiful':beautiful,'best':best,'better':better,\
+        'classic':classic, 'enjoy':enjoy, 'enough':enough,\
+        'entertaining':entertaining, 'excellent':excellent,\
+        'fans':fans, 'fun':fun, 'good':good, 'great':great,\
+        'interesting':interesting, 'like':like, 'love':love, 'nice':nice,\
+        'perfect':perfect, 'pretty':pretty, 'right':right, 'top':top,\
+        'well':well, 'won':won, 'wonderful':wonderful, 'work':work,\
+        'worth':worth,'bad':bad, 'boring':boring, 'creepy':creepy,\
+        'dark':dark, 'dead':dead, 'death':death, 'evil':evil, 'fear':fear,\
+        'funny':funny,'hard':hard, 'kill':kill, 'killed':killed, 'lack':lack,\
+        'lost':lost, 'mystery':mystery, 'plot':plot,'poor':poor,\
+        'problem':problem, 'sad':sad, 'scary':scary, 'slow':slow,\
+        'terrible':terrible, 'waste':waste, 'worst':worst, 'wrong':wrong}    
+     
+    return(add_corpus_data)     
+    
+# Summative Scoring of Sentiment (Python)
+
+def get_summative_scores(corpus):
+    # individually score each of the positive and negative words/items 
+    # for each document in the working corpus... 
+    # poviding a summative score 
+     
+    summative_score = []  # intialize list for summative scores
+    
+    for text in corpus:
+        score = 0  # initialize for individual document
+        # for each document in the working corpus... 
+        # individually score each of the eight selected positive words 
+        if (len([w for w in text.split() if w == 'beautiful']) > 0):
+            score = score +1
+        if (len([w for w in text.split() if w == 'best']) > 0):
+            score = score +1
+        if (len([w for w in text.split() if w == 'classic']) > 0):
+            score = score +1
+        if (len([w for w in text.split() if w == 'excellent']) > 0):
+            score = score +1
+        if (len([w for w in text.split() if w == 'great']) > 0):
+            score = score +1
+        if (len([w for w in text.split() if w == 'perfect']) > 0):
+            score = score +1
+        if (len([w for w in text.split() if w == 'well']) > 0):
+            score = score +1
+        if (len([w for w in text.split() if w == 'wonderful']) > 0):
+            score = score +1
+            
+    # individually score each of the ten selected negative words 
+   
+        if (len([w for w in text.split() if w == 'bad']) > 0):
+            score = score -1
+        if (len([w for w in text.split() if w == 'boring']) > 0):
+            score = score -1
+        if (len([w for w in text.split() if w == 'funny']) > 0):
+            score = score -1
+        if (len([w for w in text.split() if w == 'lack']) > 0):
+            score = score -1
+        if (len([w for w in text.split() if w == 'plot']) > 0):
+            score = score -1
+        if (len([w for w in text.split() if w == 'poor']) > 0):
+            score = score -1
+        if (len([w for w in text.split() if w == 'problem']) > 0):
+            score = score -1
+        if (len([w for w in text.split() if w == 'terrible']) > 0):
+            score = score -1
+        if (len([w for w in text.split() if w == 'waste']) > 0):
+            score = score -1
+        if (len([w for w in text.split() if w == 'worst']) > 0):
+            score = score -1
+        
+        summative_score.append(score)
+        
+    summative_score_data = {'summative_score': summative_score}
+    return(summative_score_data)           
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
